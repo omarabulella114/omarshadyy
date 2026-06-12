@@ -27,7 +27,7 @@ export default async function Home() {
               src={heroUrl}
               alt="Omar Shady – Director & Photographer"
               fill
-              className="object-cover object-top"
+              className="object-cover object-center"
               priority
               quality={100}
             />
