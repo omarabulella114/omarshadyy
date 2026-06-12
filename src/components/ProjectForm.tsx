@@ -26,6 +26,10 @@ export default function ProjectForm({ projectId }: ProjectFormProps) {
   const [dragOver, setDragOver] = useState<string | null>(null);
   const coverInputRef = useRef<HTMLInputElement>(null);
   const ogInputRef = useRef<HTMLInputElement>(null);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
+
+  const [galleryImages, setGalleryImages] = useState<{ id?: string, image_url: string, display_order: number }[]>([]);
+  const [deletedGalleryImages, setDeletedGalleryImages] = useState<string[]>([]);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -62,6 +66,21 @@ export default function ProjectForm({ projectId }: ProjectFormProps) {
         og_image_url: data.og_image_url || "",
       });
     }
+
+    const { data: images } = await supabase
+      .from("project_images")
+      .select("*")
+      .eq("project_id", projectId)
+      .order("display_order", { ascending: true });
+
+    if (images) {
+      setGalleryImages(images.map((img: any) => ({
+        id: img.id,
+        image_url: img.image_url,
+        display_order: img.display_order
+      })));
+    }
+
     setInitialLoad(false);
   }
 
@@ -106,6 +125,38 @@ export default function ProjectForm({ projectId }: ProjectFormProps) {
     await uploadFile(e.target.files[0], field);
   };
 
+  const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.length) return;
+    const files = e.target.files;
+    setUploadingField("gallery");
+    setUploadProgress(10);
+    
+    const newImages = [...galleryImages];
+    const total = files.length;
+    let completed = 0;
+
+    for (let i = 0; i < total; i++) {
+      const file = files[i];
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${fileExt}`;
+      
+      const { error } = await supabase.storage.from("portfolio-media").upload(fileName, file, { upsert: false });
+      if (!error) {
+        const { data } = supabase.storage.from("portfolio-media").getPublicUrl(fileName);
+        newImages.push({ image_url: data.publicUrl, display_order: newImages.length });
+      }
+      completed++;
+      setUploadProgress(10 + Math.floor((completed / total) * 80));
+    }
+    
+    setGalleryImages(newImages);
+    setUploadProgress(100);
+    setTimeout(() => {
+      setUploadingField(null);
+      setUploadProgress(0);
+    }, 600);
+  };
+
   const handleDrop = async (e: React.DragEvent, field: string) => {
     e.preventDefault();
     setDragOver(null);
@@ -118,12 +169,36 @@ export default function ProjectForm({ projectId }: ProjectFormProps) {
     setLoading(true);
 
     let submitError;
+    let newProjectId = projectId;
+
     if (projectId) {
       const { error } = await supabase.from("projects").update(formData).eq("id", projectId);
       submitError = error;
     } else {
-      const { error } = await supabase.from("projects").insert([formData]);
+      const { data, error } = await supabase.from("projects").insert([formData]).select().single();
       submitError = error;
+      if (data) newProjectId = data.id;
+    }
+
+    if (!submitError && newProjectId) {
+      // 1. Delete removed gallery images
+      if (deletedGalleryImages.length > 0) {
+        await supabase.from("project_images").delete().in("id", deletedGalleryImages);
+      }
+
+      // 2. Insert new or update existing gallery images
+      if (galleryImages.length > 0) {
+        const upsertData = galleryImages.map((img, idx) => ({
+          ...(img.id ? { id: img.id } : {}), // only include ID if it exists
+          project_id: newProjectId,
+          image_url: img.image_url,
+          display_order: idx, // reorder based on current array position
+        }));
+        await supabase.from("project_images").upsert(upsertData);
+      } else {
+        // If they cleared the whole gallery but didn't track deletions properly
+        await supabase.from("project_images").delete().eq("project_id", newProjectId);
+      }
     }
 
     setLoading(false);
@@ -316,7 +391,7 @@ export default function ProjectForm({ projectId }: ProjectFormProps) {
                 <img
                   src={formData.cover_image_url}
                   alt="Cover"
-                  className="w-full max-h-52 object-cover rounded-lg"
+                  className="w-full max-h-52 object-contain bg-black/20 rounded-lg"
                 />
                 <button
                   type="button"
@@ -379,11 +454,73 @@ export default function ProjectForm({ projectId }: ProjectFormProps) {
         </div>
       </section>
 
-      {/* ── Step 4: SEO (Collapsible) ─────────────────────── */}
+      {/* ── Step 4: Gallery ─────────────────────────────────── */}
+      <section className="bg-white/3 border border-white/10 rounded-2xl p-8 space-y-6">
+        <h2 className="text-xs font-semibold tracking-[0.2em] uppercase text-gray-500">
+          4 — Project Gallery
+        </h2>
+        <p className="text-xs text-gray-600 -mt-4">
+          Upload multiple images to create a gallery for this project. Great for photography collections.
+        </p>
+
+        {galleryImages.length > 0 && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            {galleryImages.map((img, idx) => (
+              <div key={idx} className="relative group aspect-square rounded-lg overflow-hidden bg-black/20">
+                <img src={img.image_url} alt={`Gallery ${idx}`} className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const newImages = [...galleryImages];
+                      newImages.splice(idx, 1);
+                      setGalleryImages(newImages);
+                      if (img.id) setDeletedGalleryImages([...deletedGalleryImages, img.id]);
+                    }}
+                    className="p-2 bg-red-500/80 hover:bg-red-500 rounded-full text-white transition-colors"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <div className="flex gap-4 items-center">
+          <button
+            type="button"
+            onClick={() => galleryInputRef.current?.click()}
+            className="flex items-center justify-center gap-3 w-full py-4 rounded-xl border-2 border-dashed border-white/20 hover:border-white/40 bg-white/5 transition-colors text-sm text-gray-400 hover:text-white"
+          >
+            {uploadingField === "gallery" ? (
+              <>
+                <Loader2 size={18} className="animate-spin text-white" />
+                Uploading... {uploadProgress}%
+              </>
+            ) : (
+              <>
+                <Upload size={18} />
+                Add Gallery Images
+              </>
+            )}
+          </button>
+          <input
+            ref={galleryInputRef}
+            type="file"
+            accept="image/*"
+            multiple
+            className="hidden"
+            onChange={handleGalleryUpload}
+          />
+        </div>
+      </section>
+
+      {/* ── Step 5: SEO (Collapsible) ─────────────────────── */}
       <section className="bg-white/3 border border-white/10 rounded-2xl p-8 space-y-6">
         <h2 className="text-xs font-semibold tracking-[0.2em] uppercase text-gray-500 flex items-center gap-2">
           <Globe size={12} />
-          4 — SEO & Sharing
+          5 — SEO & Sharing
           <span className="text-gray-700 font-normal normal-case tracking-normal text-xs">(optional)</span>
         </h2>
 
