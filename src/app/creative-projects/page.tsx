@@ -34,20 +34,20 @@ export default async function CreativeProjectsPage() {
       </div>
 
       {projects && projects.length > 0 ? (
-        /* Clean 3-column Symmetrical Grid */
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 md:gap-10">
+        /* Masonry Layout to respect original image aspect ratios */
+        <div className="columns-1 sm:columns-2 md:columns-3 gap-8 md:gap-10 space-y-8 md:space-y-10">
           {projects.map((project, index) => (
             <Link
               href={`/project/${project.id}`}
               key={project.id}
-              className="group block animate-fade-in-up"
+              className="group block animate-fade-in-up break-inside-avoid"
               style={{ animationDelay: `${index * 80}ms` }}
             >
-              <div className="relative aspect-[4/5] w-full overflow-hidden mb-4 bg-black/5">
+              <div className="relative w-full overflow-hidden mb-4 bg-black/5">
                 <img
                   src={project.cover_image_url || "/placeholder-creative.jpg"}
                   alt={project.title}
-                  className="object-cover w-full h-full transform group-hover:scale-105 transition-all duration-1000 ease-out"
+                  className="w-full h-auto transform group-hover:scale-105 transition-all duration-1000 ease-out block"
                 />
               </div>
               <div className="flex items-baseline justify-between gap-3">
