@@ -56,10 +56,10 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   return (
     <div className="pt-32 px-6 max-w-5xl mx-auto w-full min-h-screen pb-24">
       <div className="mb-12 animate-fade-in-up">
-        <h1 className="text-4xl md:text-6xl font-bold uppercase tracking-widest mb-4">
+        <h1 className="text-4xl md:text-6xl font-bold uppercase tracking-widest mb-4 text-black">
           {project.title}
         </h1>
-        <div className="flex flex-wrap gap-4 text-sm tracking-wider text-gray-400 uppercase">
+        <div className="flex flex-wrap gap-4 text-sm tracking-wider text-gray-500 uppercase">
           {project.role && <span>Role: {project.role}</span>}
           {project.year && <span>Year: {project.year}</span>}
         </div>
@@ -68,7 +68,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
       {/* Main Media (Video or Image) */}
       <div className="w-full mb-16 animate-fade-in-up animation-delay-200">
         {project.video_url ? (
-          <div className="relative aspect-video w-full overflow-hidden bg-[#111]">
+          <div className="relative aspect-video w-full overflow-hidden bg-gray-100">
             <iframe
               src={project.video_url}
               className="absolute inset-0 w-full h-full"
@@ -79,7 +79,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           </div>
         ) : (
           project.cover_image_url && (
-            <div className="relative w-full overflow-hidden">
+            <div className="relative w-full overflow-hidden bg-black/5">
               <img
                 src={project.cover_image_url}
                 alt={project.title}
@@ -92,7 +92,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
 
       {/* Description */}
       {project.description && (
-        <div className="prose prose-invert max-w-none text-lg font-light leading-relaxed mb-16 animate-fade-in-up animation-delay-400">
+        <div className="prose max-w-none text-lg font-light leading-relaxed mb-16 animate-fade-in-up animation-delay-400 text-gray-700">
           <p>{project.description}</p>
         </div>
       )}
@@ -105,7 +105,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
               key={idx}
               src={img.image_url}
               alt={`${project.title} Gallery Image ${idx + 1}`}
-              className="w-full h-auto object-cover"
+              className="w-full h-auto object-cover bg-black/5"
             />
           ))}
         </div>

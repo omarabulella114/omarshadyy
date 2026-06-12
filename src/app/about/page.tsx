@@ -14,7 +14,7 @@ export default function AboutPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-24 items-start">
 
         {/* Portrait — shorter on mobile */}
-        <div className="relative aspect-[4/5] md:aspect-[3/4] w-full overflow-hidden animate-fade-in-up bg-white/5">
+        <div className="relative aspect-[4/5] md:aspect-[3/4] w-full overflow-hidden animate-fade-in-up bg-black/5">
           <Image
             src="/about-portrait.jpeg"
             alt="Omar Shady"
@@ -30,11 +30,11 @@ export default function AboutPage() {
 
           <p className="text-xs tracking-[0.4em] text-gray-500 uppercase mb-4 md:mb-6">Director & Photographer</p>
 
-          <h1 className={`text-3xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 md:mb-10 ${playfair.className}`}>
+          <h1 className={`text-3xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 md:mb-10 text-black ${playfair.className}`}>
             Vision &<br />Philosophy
           </h1>
 
-          <div className="space-y-4 md:space-y-6 text-gray-400 font-light leading-relaxed text-sm md:text-lg">
+          <div className="space-y-4 md:space-y-6 text-gray-600 font-light leading-relaxed text-sm md:text-lg">
             <p>
               I am Omar Shady — a filmmaker and photographer dedicated to crafting visual stories that linger long after the final frame.
             </p>
@@ -42,18 +42,18 @@ export default function AboutPage() {
               My work spans cinematic short films, commercial projects, cultural events, and experimental photography. I am drawn to subjects that exist in quiet contrast: movement and stillness, light and shadow, the ordinary and the extraordinary.
             </p>
             <p>
-              Every project begins with a single question: <em className="text-white">what do I want the audience to feel?</em> The answer shapes everything — from location scouting to the final color grade.
+              Every project begins with a single question: <em className="text-black font-medium">what do I want the audience to feel?</em> The answer shapes everything — from location scouting to the final color grade.
             </p>
           </div>
 
-          <div className="mt-10 md:mt-14 pt-8 md:pt-10 border-t border-white/10 grid grid-cols-3 gap-4 md:gap-8 text-center">
+          <div className="mt-10 md:mt-14 pt-8 md:pt-10 border-t border-black/10 grid grid-cols-3 gap-4 md:gap-8 text-center">
             {[
               { label: "Films", value: "—" },
               { label: "Projects", value: "—" },
               { label: "Years", value: "—" },
             ].map(({ label, value }) => (
               <div key={label}>
-                <p className={`text-2xl md:text-4xl font-bold text-white ${playfair.className}`}>{value}</p>
+                <p className={`text-2xl md:text-4xl font-bold text-black ${playfair.className}`}>{value}</p>
                 <p className="text-xs tracking-[0.2em] text-gray-500 uppercase mt-1 md:mt-2">{label}</p>
               </div>
             ))}

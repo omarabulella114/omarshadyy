@@ -30,7 +30,7 @@ export default function Navbar() {
         {/* Logo */}
         <Link
           href="/"
-          className={`text-lg sm:text-2xl font-bold italic text-white tracking-wide z-50 relative drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] hover:opacity-70 active:opacity-50 transition-opacity duration-300 ${playfair.className}`}
+          className={`text-lg sm:text-2xl font-bold italic text-black tracking-wide z-50 relative drop-shadow-[0_1px_8px_rgba(255,255,255,0.9)] hover:opacity-70 active:opacity-50 transition-opacity duration-300 ${playfair.className}`}
           onClick={() => setIsOpen(false)}
         >
           Omar Shady
@@ -39,10 +39,10 @@ export default function Navbar() {
         {/* Hamburger Button — larger tap target on mobile */}
         <button
           onClick={toggleMenu}
-          className="z-50 relative p-3 -mr-2 text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] hover:opacity-70 active:opacity-50 transition-opacity duration-300 focus:outline-none"
+          className="z-50 relative p-3 -mr-2 text-black drop-shadow-[0_1px_8px_rgba(255,255,255,0.9)] hover:opacity-70 active:opacity-50 transition-opacity duration-300 focus:outline-none"
           aria-label="Toggle menu"
         >
-          {isOpen ? <X size={24} strokeWidth={1.5} /> : <Menu size={24} strokeWidth={1.5} />}
+          {isOpen ? <X size={24} strokeWidth={2} /> : <Menu size={24} strokeWidth={2} />}
         </button>
       </nav>
 
@@ -66,17 +66,17 @@ export default function Navbar() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 30, stiffness: 220 }}
-              className="fixed top-0 right-0 h-full w-full sm:w-[400px] bg-[#0a0a0a] border-l border-white/10 z-50 flex flex-col shadow-2xl"
+              className="fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white border-l border-black/10 z-50 flex flex-col shadow-2xl"
             >
               {/* Top bar */}
-              <div className="flex items-center justify-between px-10 py-8 border-b border-white/10">
-                <span className={`text-xs tracking-[0.4em] text-white/30 uppercase ${playfair.className}`}>Menu</span>
+              <div className="flex items-center justify-between px-10 py-8 border-b border-black/10">
+                <span className={`text-xs tracking-[0.4em] text-black/30 uppercase ${playfair.className}`}>Menu</span>
                 <button
                   onClick={toggleMenu}
-                  className="text-white/40 hover:text-white transition-colors"
+                  className="text-black/40 hover:text-black transition-colors"
                   aria-label="Close menu"
                 >
-                  <X size={22} strokeWidth={1.5} />
+                  <X size={22} strokeWidth={2} />
                 </button>
               </div>
 
@@ -95,13 +95,13 @@ export default function Navbar() {
                         <Link
                           href={link.href}
                           onClick={() => setIsOpen(false)}
-                          className={`group flex items-center justify-between py-4 border-b border-white/5 transition-all duration-300 ${isActive ? "text-white" : "text-white/40 hover:text-white"}`}
+                          className={`group flex items-center justify-between py-4 border-b border-black/5 transition-all duration-300 ${isActive ? "text-black" : "text-black/40 hover:text-black"}`}
                         >
                           <div className="flex items-center gap-4">
-                            <span className="text-[10px] text-white/20 tabular-nums w-5">{String(i + 1).padStart(2, "0")}</span>
+                            <span className="text-[10px] text-black/20 tabular-nums w-5">{String(i + 1).padStart(2, "0")}</span>
                             <span className={`text-2xl font-bold ${playfair.className}`}>{link.title}</span>
                           </div>
-                          {isActive && <span className="w-2 h-2 rounded-full bg-white" />}
+                          {isActive && <span className="w-2 h-2 rounded-full bg-black" />}
                         </Link>
                       </motion.li>
                     );
@@ -114,20 +114,20 @@ export default function Navbar() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.6, duration: 0.4 }}
-                className="px-10 py-8 border-t border-white/10 flex justify-between items-center"
+                className="px-10 py-8 border-t border-black/10 flex justify-between items-center"
               >
                 <Link
                   href="/admin/login"
                   onClick={() => setIsOpen(false)}
-                  className="text-[10px] tracking-[0.3em] text-white/20 hover:text-white transition-colors uppercase"
+                  className="text-[10px] tracking-[0.3em] text-black/20 hover:text-black transition-colors uppercase"
                 >
                   Admin
                 </Link>
                 <div className="flex gap-5 items-center">
-                  <a href="https://www.instagram.com/omarshadyy?igsh=MW1yd3gwcWR1Y2c3eQ==" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-white/30 hover:text-white transition-colors">
+                  <a href="https://www.instagram.com/omarshadyy?igsh=MW1yd3gwcWR1Y2c3eQ==" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-black/30 hover:text-black transition-colors">
                     <InstagramIcon size={16} />
                   </a>
-                  <a href="#" aria-label="Vimeo" className="text-white/30 hover:text-white transition-colors">
+                  <a href="#" aria-label="Vimeo" className="text-black/30 hover:text-black transition-colors">
                     <VimeoIcon size={16} />
                   </a>
                 </div>

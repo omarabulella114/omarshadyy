@@ -16,7 +16,7 @@ export default function ContactPage() {
       {/* Header */}
       <div className="mb-12 md:mb-20 animate-fade-in-up">
         <p className="text-xs tracking-[0.4em] text-gray-500 uppercase mb-3 md:mb-4">Get in Touch</p>
-        <h1 className={`text-4xl md:text-7xl font-bold leading-tight ${playfair.className}`}>
+        <h1 className={`text-4xl md:text-7xl font-bold leading-tight text-black ${playfair.className}`}>
           Let's Work<br />Together
         </h1>
       </div>
@@ -25,22 +25,22 @@ export default function ContactPage() {
 
         {/* Left: Contact Info */}
         <div className="space-y-6 md:space-y-8">
-          <p className="text-gray-400 font-light leading-relaxed text-base md:text-lg max-w-sm">
+          <p className="text-gray-600 font-light leading-relaxed text-base md:text-lg max-w-sm">
             Available for directing, photography, and creative collaborations worldwide.
           </p>
 
           <div className="space-y-4 md:space-y-5">
             <a href="mailto:contact@omarshady.com"
-              className="flex items-center gap-4 group text-gray-300 hover:text-white transition-colors duration-300 active:opacity-70">
-              <Mail size={18} strokeWidth={1.5} className="text-gray-500 group-hover:text-white transition-colors shrink-0" />
-              <span className="text-sm md:text-base tracking-wide font-light border-b border-white/10 group-hover:border-white/50 pb-1 transition-colors">
+              className="flex items-center gap-4 group text-gray-800 hover:text-black transition-colors duration-300 active:opacity-70">
+              <Mail size={18} strokeWidth={2} className="text-gray-500 group-hover:text-black transition-colors shrink-0" />
+              <span className="text-sm md:text-base tracking-wide font-light border-b border-black/10 group-hover:border-black/50 pb-1 transition-colors">
                 contact@omarshady.com
               </span>
             </a>
             <a href="tel:+1234567890"
-              className="flex items-center gap-4 group text-gray-300 hover:text-white transition-colors duration-300 active:opacity-70">
-              <Phone size={18} strokeWidth={1.5} className="text-gray-500 group-hover:text-white transition-colors shrink-0" />
-              <span className="text-sm md:text-base tracking-wide font-light border-b border-white/10 group-hover:border-white/50 pb-1 transition-colors">
+              className="flex items-center gap-4 group text-gray-800 hover:text-black transition-colors duration-300 active:opacity-70">
+              <Phone size={18} strokeWidth={2} className="text-gray-500 group-hover:text-black transition-colors shrink-0" />
+              <span className="text-sm md:text-base tracking-wide font-light border-b border-black/10 group-hover:border-black/50 pb-1 transition-colors">
                 +1 234 567 890
               </span>
             </a>
@@ -58,12 +58,12 @@ export default function ContactPage() {
             ].map(({ href, Icon, label, sub, target }) => (
               <a key={label} href={href} target={target} rel={target ? "noopener noreferrer" : undefined}
                 className="flex items-center gap-4 md:gap-5 group active:opacity-70">
-                <div className="w-10 h-10 border border-white/10 rounded-full flex items-center justify-center group-hover:border-white/50 transition-colors shrink-0">
+                <div className="w-10 h-10 border border-black/10 rounded-full flex items-center justify-center group-hover:border-black/50 transition-colors shrink-0 text-black">
                   <Icon size={18} />
                 </div>
                 <div>
-                  <p className="text-white text-sm font-light tracking-wide group-hover:opacity-70 transition-opacity">{label}</p>
-                  <p className="text-gray-600 text-xs tracking-wide">{sub}</p>
+                  <p className="text-black text-sm font-medium tracking-wide group-hover:opacity-70 transition-opacity">{label}</p>
+                  <p className="text-gray-500 text-xs tracking-wide">{sub}</p>
                 </div>
               </a>
             ))}
