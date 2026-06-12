@@ -53,7 +53,7 @@ export default async function FilmsPage() {
                   <img
                     src={film.cover_image_url || "/placeholder-film.jpg"}
                     alt={film.title}
-                    className="object-cover w-full h-full transform group-hover:scale-105 transition-all duration-1000 ease-out grayscale group-hover:grayscale-0"
+                    className="object-cover w-full h-full transform group-hover:scale-105 transition-all duration-1000 ease-out"
                   />
                   <div className="absolute inset-0 bg-black/40 group-hover:bg-black/0 transition-colors duration-700" />
                 </div>
