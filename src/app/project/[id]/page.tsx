@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -72,6 +73,27 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
     .eq("project_id", resolvedParams.id)
     .order("display_order", { ascending: true });
 
+  // Fetch sibling projects in the same category for Next/Prev navigation
+  const { data: categoryProjects } = await supabase
+    .from("projects")
+    .select("id, title")
+    .eq("category", project.category)
+    .eq("is_published", true)
+    .order("created_at", { ascending: false });
+
+  let prevProject = null;
+  let nextProject = null;
+
+  if (categoryProjects) {
+    const currentIndex = categoryProjects.findIndex((p) => p.id === project.id);
+    if (currentIndex > 0) {
+      prevProject = categoryProjects[currentIndex - 1]; // Newer
+    }
+    if (currentIndex !== -1 && currentIndex < categoryProjects.length - 1) {
+      nextProject = categoryProjects[currentIndex + 1]; // Older
+    }
+  }
+
   const embedUrl = project.video_url ? getEmbedUrl(project.video_url) : "";
 
   return (
@@ -131,6 +153,27 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           ))}
         </div>
       )}
+
+      {/* Next/Prev Navigation */}
+      <div className="flex justify-between items-center mt-32 pt-10 border-t border-gray-200 animate-fade-in-up animation-delay-500">
+        <div className="flex-1">
+          {prevProject && (
+            <Link href={`/project/${prevProject.id}`} className="group inline-block">
+              <p className="text-xs tracking-widest text-gray-400 uppercase mb-2 group-hover:text-black transition-colors">← Previous</p>
+              <p className="text-lg md:text-xl font-bold uppercase text-black group-hover:opacity-60 transition-opacity">{prevProject.title}</p>
+            </Link>
+          )}
+        </div>
+        
+        <div className="flex-1 text-right">
+          {nextProject && (
+            <Link href={`/project/${nextProject.id}`} className="group inline-block text-right">
+              <p className="text-xs tracking-widest text-gray-400 uppercase mb-2 group-hover:text-black transition-colors">Next →</p>
+              <p className="text-lg md:text-xl font-bold uppercase text-black group-hover:opacity-60 transition-opacity">{nextProject.title}</p>
+            </Link>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
