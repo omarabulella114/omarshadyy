@@ -365,17 +365,17 @@ export default function ProjectForm({ projectId }: ProjectFormProps) {
         <div>
           <label className={labelClass}>
             <Video size={12} className="inline mr-2" />
-            Video Embed URL
+            Video URL
           </label>
           <input
             type="text"
             name="video_url"
             value={formData.video_url}
             onChange={handleChange}
-            placeholder="https://player.vimeo.com/video/... or https://www.youtube.com/embed/..."
+            placeholder="https://www.youtube.com/watch?v=... or https://vimeo.com/..."
             className={inputClass}
           />
-          <p className="text-xs text-gray-600 mt-2">Paste a Vimeo or YouTube embed URL. This will be shown on the project detail page.</p>
+          <p className="text-xs text-gray-600 mt-2">Paste a standard Vimeo or YouTube link. It will automatically convert to a playable video.</p>
         </div>
       </section>
 

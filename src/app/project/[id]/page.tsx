@@ -36,6 +36,25 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   };
 }
 
+function getEmbedUrl(url: string) {
+  if (!url) return "";
+  
+  // YouTube matching: watch?v=ID or youtu.be/ID
+  const ytMatch = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+  if (ytMatch && ytMatch[1]) {
+    return `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=0&rel=0`;
+  }
+  
+  // Vimeo matching: vimeo.com/ID
+  const vimeoMatch = url.match(/vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|video\/|)(\d+)(?:$|\/|\?)/i);
+  if (vimeoMatch && vimeoMatch[3]) {
+    return `https://player.vimeo.com/video/${vimeoMatch[3]}?autoplay=0`;
+  }
+
+  // Fallback to exactly what the user pasted if it doesn't match
+  return url;
+}
+
 export default async function ProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
   const { data: project } = await supabase
@@ -53,6 +72,8 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
     .eq("project_id", resolvedParams.id)
     .order("display_order", { ascending: true });
 
+  const embedUrl = project.video_url ? getEmbedUrl(project.video_url) : "";
+
   return (
     <div className="pt-32 px-6 max-w-5xl mx-auto w-full min-h-screen pb-24">
       <div className="mb-12 animate-fade-in-up">
@@ -67,13 +88,13 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
 
       {/* Main Media (Video or Image) */}
       <div className="w-full mb-16 animate-fade-in-up animation-delay-200">
-        {project.video_url ? (
+        {embedUrl ? (
           <div className="relative aspect-video w-full overflow-hidden bg-gray-100">
             <iframe
-              src={project.video_url}
+              src={embedUrl}
               className="absolute inset-0 w-full h-full"
               frameBorder="0"
-              allow="autoplay; fullscreen; picture-in-picture"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             ></iframe>
           </div>
