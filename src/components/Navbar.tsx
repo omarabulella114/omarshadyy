@@ -26,23 +26,23 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="fixed w-full top-0 z-50 px-8 py-7 flex items-center justify-between">
+      <nav className="fixed w-full top-0 z-50 px-6 md:px-8 py-5 md:py-7 flex items-center justify-between">
         {/* Logo */}
         <Link
           href="/"
-          className={`text-xl sm:text-2xl font-bold italic text-white tracking-wide z-50 relative drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] hover:opacity-70 transition-opacity duration-300 ${playfair.className}`}
+          className={`text-lg sm:text-2xl font-bold italic text-white tracking-wide z-50 relative drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] hover:opacity-70 active:opacity-50 transition-opacity duration-300 ${playfair.className}`}
           onClick={() => setIsOpen(false)}
         >
           Omar Shady
         </Link>
 
-        {/* Hamburger Button */}
+        {/* Hamburger Button — larger tap target on mobile */}
         <button
           onClick={toggleMenu}
-          className="z-50 relative p-2 text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] hover:opacity-70 transition-opacity duration-300 focus:outline-none"
+          className="z-50 relative p-3 -mr-2 text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] hover:opacity-70 active:opacity-50 transition-opacity duration-300 focus:outline-none"
           aria-label="Toggle menu"
         >
-          {isOpen ? <X size={26} strokeWidth={1.5} /> : <Menu size={26} strokeWidth={1.5} />}
+          {isOpen ? <X size={24} strokeWidth={1.5} /> : <Menu size={24} strokeWidth={1.5} />}
         </button>
       </nav>
 
