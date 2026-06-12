@@ -10,9 +10,47 @@ const inter = Inter({
   display: "swap",
 });
 
+const siteUrl = "https://omarshadyy.vercel.app";
+const ogImage = `${siteUrl}/hero.jpeg`;
+
 export const metadata: Metadata = {
-  title: "Omar Shady | Director & Photographer",
-  description: "A filmmaker, photographer, and creative storyteller creating visual experiences, documentaries, events, and cultural projects.",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "Omar Shady | Director & Photographer",
+    template: "%s | Omar Shady",
+  },
+  description: "A filmmaker, photographer, and creative director crafting cinematic visual stories — films, photography, and creative projects worldwide.",
+  keywords: ["Omar Shady", "filmmaker", "photographer", "director", "cinematography", "creative director", "films", "portfolio"],
+  authors: [{ name: "Omar Shady" }],
+
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: siteUrl,
+    siteName: "Omar Shady",
+    title: "Omar Shady | Director & Photographer",
+    description: "A filmmaker, photographer, and creative director crafting cinematic visual stories — films, photography, and creative projects worldwide.",
+    images: [
+      {
+        url: ogImage,
+        width: 1200,
+        height: 630,
+        alt: "Omar Shady – Director & Photographer",
+      },
+    ],
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "Omar Shady | Director & Photographer",
+    description: "A filmmaker, photographer, and creative director crafting cinematic visual stories.",
+    images: [ogImage],
+  },
+
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/hero.jpeg",
+  },
 };
 
 export default function RootLayout({
