@@ -16,7 +16,7 @@ export default async function Home() {
   const isVideo = settings?.hero_media_type === "video" || heroUrl.endsWith(".mp4");
 
   return (
-    <div className="relative w-full h-[100dvh] overflow-hidden bg-white">
+    <div className="relative w-full h-[100dvh] overflow-hidden bg-[#050505]">
       {/* Background Media */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         {isVideo ? (
@@ -33,8 +33,8 @@ export default async function Home() {
             />
           </div>
         )}
-        {/* Cinematic Vignette - Light Mode */}
-        <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-white/10 to-white/70 z-10" />
+        {/* Cinematic Vignette */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-black/65 z-10" />
       </div>
 
       {/* Hero Content */}
@@ -53,33 +53,33 @@ export default async function Home() {
             <div className="flex gap-8 sm:gap-14">
               <Link
                 href="/films"
-                className="group relative uppercase tracking-[0.3em] text-sm font-medium text-black/80 hover:text-black transition-colors duration-300 drop-shadow-[0_1px_4px_rgba(255,255,255,1)]"
+                className="group relative uppercase tracking-[0.3em] text-sm font-light text-white/80 hover:text-white transition-colors duration-300 drop-shadow-[0_2px_8px_rgba(0,0,0,1)]"
               >
                 Films
-                <span className="absolute -bottom-2 left-0 w-0 h-[2px] bg-black group-hover:w-full transition-all duration-500" />
+                <span className="absolute -bottom-2 left-0 w-0 h-px bg-white group-hover:w-full transition-all duration-500" />
               </Link>
               <Link
                 href="/creative-projects"
-                className="group relative uppercase tracking-[0.3em] text-sm font-medium text-black/80 hover:text-black transition-colors duration-300 drop-shadow-[0_1px_4px_rgba(255,255,255,1)]"
+                className="group relative uppercase tracking-[0.3em] text-sm font-light text-white/80 hover:text-white transition-colors duration-300 drop-shadow-[0_2px_8px_rgba(0,0,0,1)]"
               >
                 Creative
-                <span className="absolute -bottom-2 left-0 w-0 h-[2px] bg-black group-hover:w-full transition-all duration-500" />
+                <span className="absolute -bottom-2 left-0 w-0 h-px bg-white group-hover:w-full transition-all duration-500" />
               </Link>
             </div>
 
             {/* Social Icons */}
             <div className="flex gap-6 items-center">
               <a href="mailto:contact@omarshady.com" aria-label="Email"
-                className="text-black/70 hover:text-black transition-all duration-300 active:scale-90 drop-shadow-[0_1px_4px_rgba(255,255,255,1)]">
-                <Mail size={22} strokeWidth={2} />
+                className="text-white/70 hover:text-white transition-all duration-300 active:scale-90 drop-shadow-[0_2px_8px_rgba(0,0,0,1)]">
+                <Mail size={22} strokeWidth={1.5} />
               </a>
               <a href="https://www.instagram.com/omarshadyy?igsh=MW1yd3gwcWR1Y2c3eQ==" target="_blank" rel="noopener noreferrer" aria-label="Instagram"
-                className="text-black/70 hover:text-black transition-all duration-300 active:scale-90 drop-shadow-[0_1px_4px_rgba(255,255,255,1)]">
+                className="text-white/70 hover:text-white transition-all duration-300 active:scale-90 drop-shadow-[0_2px_8px_rgba(0,0,0,1)]">
                 <InstagramIcon size={22} />
               </a>
               <a href="tel:+1234567890" aria-label="Phone"
-                className="text-black/70 hover:text-black transition-all duration-300 active:scale-90 drop-shadow-[0_1px_4px_rgba(255,255,255,1)]">
-                <Phone size={22} strokeWidth={2} />
+                className="text-white/70 hover:text-white transition-all duration-300 active:scale-90 drop-shadow-[0_2px_8px_rgba(0,0,0,1)]">
+                <Phone size={22} strokeWidth={1.5} />
               </a>
             </div>
           </div>
