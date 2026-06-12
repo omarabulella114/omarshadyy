@@ -75,20 +75,18 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   const embedUrl = project.video_url ? getEmbedUrl(project.video_url) : "";
 
   return (
-    <div className="min-h-screen pb-24">
-      <div className="pt-32 px-6 max-w-5xl mx-auto w-full">
-        <div className="mb-8 md:mb-12 animate-fade-in-up">
-          <h1 className="text-4xl md:text-6xl font-bold uppercase tracking-widest mb-4 text-black">
-            {project.title}
-          </h1>
-          <div className="flex flex-wrap gap-4 text-sm tracking-wider text-gray-500 uppercase">
-            {project.role && <span>Role: {project.role}</span>}
-            {project.year && <span>Year: {project.year}</span>}
-          </div>
+    <div className="pt-32 px-6 max-w-5xl mx-auto w-full min-h-screen pb-24">
+      <div className="mb-12 animate-fade-in-up">
+        <h1 className="text-4xl md:text-6xl font-bold uppercase tracking-widest mb-4 text-black">
+          {project.title}
+        </h1>
+        <div className="flex flex-wrap gap-4 text-sm tracking-wider text-gray-500 uppercase">
+          {project.role && <span>Role: {project.role}</span>}
+          {project.year && <span>Year: {project.year}</span>}
         </div>
       </div>
 
-      {/* Main Media (Video or Image) - Full Bleed */}
+      {/* Main Media (Video or Image) */}
       <div className="w-full mb-16 animate-fade-in-up animation-delay-200">
         {embedUrl ? (
           <div className="relative aspect-video w-full overflow-hidden bg-gray-100">
@@ -113,28 +111,26 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
         )}
       </div>
 
-      <div className="px-6 max-w-5xl mx-auto w-full">
-        {/* Description */}
-        {project.description && (
-          <div className="prose max-w-none text-lg font-light leading-relaxed mb-16 animate-fade-in-up animation-delay-400 text-gray-700">
-            <p>{project.description}</p>
-          </div>
-        )}
+      {/* Description */}
+      {project.description && (
+        <div className="prose max-w-none text-lg font-light leading-relaxed mb-16 animate-fade-in-up animation-delay-400 text-gray-700">
+          <p>{project.description}</p>
+        </div>
+      )}
 
-        {/* Gallery */}
-        {gallery && gallery.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-fade-in-up animation-delay-400">
-            {gallery.map((img, idx) => (
-              <img
-                key={idx}
-                src={img.image_url}
-                alt={`${project.title} Gallery Image ${idx + 1}`}
-                className="w-full h-auto object-cover bg-black/5"
-              />
-            ))}
-          </div>
-        )}
-      </div>
+      {/* Gallery */}
+      {gallery && gallery.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-fade-in-up animation-delay-400">
+          {gallery.map((img, idx) => (
+            <img
+              key={idx}
+              src={img.image_url}
+              alt={`${project.title} Gallery Image ${idx + 1}`}
+              className="w-full h-auto object-cover bg-black/5"
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

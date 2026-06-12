@@ -34,20 +34,20 @@ export default async function FilmsPage() {
       </div>
 
       {films && films.length > 0 ? (
-        /* Masonry Layout to respect original image aspect ratios */
-        <div className="columns-1 md:columns-2 gap-10 md:gap-14 space-y-10 md:space-y-14">
+        /* Clean 2-column Symmetrical Grid */
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14">
           {films.map((film, index) => (
             <Link
               href={`/project/${film.id}`}
               key={film.id}
-              className="group block animate-fade-in-up break-inside-avoid"
+              className="group block animate-fade-in-up"
               style={{ animationDelay: `${index * 80}ms` }}
             >
-              <div className="relative w-full overflow-hidden mb-4 bg-black/5">
+              <div className="relative aspect-video w-full overflow-hidden mb-4 bg-black/5">
                 <img
                   src={film.cover_image_url || "/placeholder-film.jpg"}
                   alt={film.title}
-                  className="w-full h-auto transform group-hover:scale-105 transition-all duration-1000 ease-out block"
+                  className="object-cover w-full h-full transform group-hover:scale-105 transition-all duration-1000 ease-out"
                 />
               </div>
               <div className="flex items-baseline justify-between gap-3">
