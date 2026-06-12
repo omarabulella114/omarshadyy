@@ -11,7 +11,6 @@ const inter = Inter({
 });
 
 const siteUrl = "https://omarshadyy.vercel.app";
-const ogImage = `${siteUrl}/hero.jpeg`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -30,21 +29,12 @@ export const metadata: Metadata = {
     siteName: "Omar Shady",
     title: "Omar Shady | Director & Photographer",
     description: "A filmmaker, photographer, and creative director crafting cinematic visual stories — films, photography, and creative projects worldwide.",
-    images: [
-      {
-        url: ogImage,
-        width: 1200,
-        height: 630,
-        alt: "Omar Shady – Director & Photographer",
-      },
-    ],
   },
 
   twitter: {
     card: "summary_large_image",
     title: "Omar Shady | Director & Photographer",
     description: "A filmmaker, photographer, and creative director crafting cinematic visual stories.",
-    images: [ogImage],
   },
 
   icons: {
