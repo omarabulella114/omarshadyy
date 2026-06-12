@@ -131,7 +131,7 @@ export default function ProjectForm({ projectId }: ProjectFormProps) {
       alert("Error saving project: " + submitError.message);
     } else {
       setSaved(true);
-      setTimeout(() => router.push("/admin/projects"), 800);
+      setTimeout(() => { window.location.href = "/admin/projects"; }, 800);
     }
   };
 
@@ -449,7 +449,7 @@ export default function ProjectForm({ projectId }: ProjectFormProps) {
       <div className="flex items-center justify-between py-4 sticky bottom-0 bg-[#050505] border-t border-white/10 px-2">
         <button
           type="button"
-          onClick={() => router.push("/admin/projects")}
+          onClick={() => { window.location.href = "/admin/projects"; }}
           className="text-sm text-gray-500 hover:text-white transition-colors tracking-wide"
         >
           ← Cancel

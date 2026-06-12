@@ -42,13 +42,13 @@ export default function AdminProjects() {
     <div className="max-w-6xl mx-auto">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold tracking-widest uppercase">Projects</h1>
-        <a 
-          href="/admin/projects/new" 
+        <button 
+          onClick={() => { window.location.href = "/admin/projects/new"; }}
           className="flex items-center gap-2 bg-white text-black px-4 py-2 rounded font-semibold hover:bg-gray-200 transition-colors"
         >
           <Plus size={20} />
           New Project
-        </a>
+        </button>
       </div>
 
       <div className="bg-[#0a0a0a] border border-white/10 rounded-xl overflow-hidden">
