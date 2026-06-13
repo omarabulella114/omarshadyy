@@ -9,6 +9,7 @@ export default function AdminSettings() {
   const [initialLoad, setInitialLoad] = useState(true);
   const [settingsId, setSettingsId] = useState<string | null>(null);
 
+  const [formData, setFormData] = useState({
     hero_media_url: "",
     hero_media_type: "image",
     bio_text: "",
