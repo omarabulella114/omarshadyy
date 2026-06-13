@@ -14,6 +14,9 @@ export default function AdminSettings() {
     hero_media_type: "image",
     bio_text: "",
     about_image_url: "",
+    about_subtitle: "",
+    about_title: "",
+    about_text: "",
   });
 
   useEffect(() => {
@@ -29,6 +32,9 @@ export default function AdminSettings() {
         hero_media_type: data.hero_media_type || "image",
         bio_text: data.bio_text || "",
         about_image_url: data.about_image_url || "",
+        about_subtitle: data.about_subtitle || "",
+        about_title: data.about_title || "",
+        about_text: data.about_text || "",
       });
     }
     setInitialLoad(false);
@@ -141,6 +147,22 @@ export default function AdminSettings() {
           {formData.about_image_url && (
             <img src={formData.about_image_url} alt="About Portrait Preview" className="h-48 object-cover mt-6 rounded border border-white/10" />
           )}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Subtitle</label>
+              <input type="text" name="about_subtitle" value={formData.about_subtitle} onChange={handleChange} className="w-full bg-white/5 border border-white/10 rounded p-3 text-white" placeholder="Director & Photographer" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Title</label>
+              <input type="text" name="about_title" value={formData.about_title} onChange={handleChange} className="w-full bg-white/5 border border-white/10 rounded p-3 text-white" placeholder="Vision & Philosophy" />
+            </div>
+          </div>
+          
+          <div className="mt-6">
+            <label className="block text-sm font-medium text-gray-300 mb-2">Biography Text (Use Enter for new paragraphs)</label>
+            <textarea name="about_text" value={formData.about_text} onChange={handleChange} rows={6} className="w-full bg-white/5 border border-white/10 rounded p-3 text-white" placeholder="I am Omar Shady..." />
+          </div>
         </div>
 
         <div className="pt-6 border-t border-white/10 flex justify-end">
