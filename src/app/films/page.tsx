@@ -14,7 +14,7 @@ export const metadata = {
 export default async function FilmsPage() {
   const { data: films } = await supabase
     .from("projects")
-    .select("id, title, cover_image_url")
+    .select("id, title, cover_image_url, cover_fit")
     .eq("category", "film")
     .eq("is_published", true)
     .order("display_order", { ascending: true })
@@ -48,7 +48,8 @@ export default async function FilmsPage() {
                 <img
                   src={film.cover_image_url || "/placeholder-film.jpg"}
                   alt={film.title}
-                  className="object-cover w-full h-full transform group-hover:scale-105 transition-all duration-1000 ease-out"
+                  className="w-full h-full transform group-hover:scale-105 transition-all duration-1000 ease-out"
+                  style={{ objectFit: (film.cover_fit as "cover" | "contain") || "cover" }}
                 />
               </div>
               <div className="flex justify-center text-center mt-2">

@@ -41,6 +41,7 @@ export default function ProjectForm({ projectId }: ProjectFormProps) {
     video_url: "",
     video_file_url: "",
     cover_image_url: "",
+    cover_fit: "cover" as "cover" | "contain",
     is_published: false,
     meta_title: "",
     meta_description: "",
@@ -63,6 +64,7 @@ export default function ProjectForm({ projectId }: ProjectFormProps) {
         video_url: data.video_url || "",
         video_file_url: data.video_file_url || "",
         cover_image_url: data.cover_image_url || "",
+        cover_fit: data.cover_fit || "cover",
         is_published: data.is_published || false,
         meta_title: data.meta_title || "",
         meta_description: data.meta_description || "",
@@ -437,6 +439,31 @@ export default function ProjectForm({ projectId }: ProjectFormProps) {
             placeholder="https://..."
             className={`${inputClass} mt-3`}
           />
+
+          {/* Cover Fit */}
+          <div className="mt-4">
+            <label className={labelClass}>Cover Display Style</label>
+            <div className="grid grid-cols-2 gap-3 mt-2">
+              {(["cover", "contain"] as const).map((fit) => (
+                <button
+                  key={fit}
+                  type="button"
+                  onClick={() => setFormData(p => ({ ...p, cover_fit: fit }))}
+                  className={`py-3 rounded-lg border text-sm font-medium tracking-wider uppercase transition-all duration-200 ${
+                    formData.cover_fit === fit
+                      ? "border-white bg-white text-black"
+                      : "border-white/20 text-gray-400 hover:border-white/50"
+                  }`}
+                >
+                  {fit === "cover" ? "🖼️  Fill (Cover)" : "📐  Fit (Contain)"}
+                </button>
+              ))}
+            </div>
+            <p className="text-xs text-gray-600 mt-2">
+              <strong className="text-gray-500">Fill</strong>: image fills the thumbnail and may be cropped. &nbsp;
+              <strong className="text-gray-500">Fit</strong>: full image visible, may have empty sides.
+            </p>
+          </div>
         </div>
 
         {/* Video Upload OR URL */}
