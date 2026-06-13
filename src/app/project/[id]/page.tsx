@@ -79,6 +79,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
     .select("id, title")
     .eq("category", project.category)
     .eq("is_published", true)
+    .order("display_order", { ascending: true })
     .order("created_at", { ascending: false });
 
   let prevProject = null;
@@ -110,7 +111,16 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
 
       {/* Main Media (Video or Image) */}
       <div className="w-full mb-16 animate-fade-in-up animation-delay-200">
-        {embedUrl ? (
+        {project.video_file_url ? (
+          <div className="relative aspect-video w-full overflow-hidden bg-black/5">
+            <video
+              src={project.video_file_url}
+              controls
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          </div>
+        ) : embedUrl ? (
           <div className="relative aspect-video w-full overflow-hidden bg-gray-100">
             <iframe
               src={embedUrl}

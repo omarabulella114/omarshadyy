@@ -14,9 +14,10 @@ export const metadata = {
 export default async function CreativeProjectsPage() {
   const { data: projects } = await supabase
     .from("projects")
-    .select("*")
+    .select("id, title, cover_image_url")
     .eq("category", "creative")
     .eq("is_published", true)
+    .order("display_order", { ascending: true })
     .order("created_at", { ascending: false });
 
   return (
@@ -50,13 +51,11 @@ export default async function CreativeProjectsPage() {
                   className="object-cover w-full h-full transform group-hover:scale-105 transition-all duration-1000 ease-out"
                 />
               </div>
-              <div className="flex items-baseline justify-between gap-3">
-                <h2 className={`text-base md:text-xl font-bold tracking-wide uppercase text-black group-hover:opacity-60 transition-opacity duration-300 ${playfair.className}`}>
+              <div className="flex justify-center text-center mt-2">
+                <h2 className={`text-base md:text-lg font-bold tracking-widest uppercase text-black group-hover:opacity-60 transition-opacity duration-300 ${playfair.className}`}>
                   {project.title}
                 </h2>
-                <p className="text-xs tracking-[0.2em] text-gray-500 uppercase shrink-0">{project.year}</p>
               </div>
-              {project.role && <p className="text-[10px] tracking-[0.15em] text-gray-500 uppercase mt-1">{project.role}</p>}
             </Link>
           ))}
         </div>

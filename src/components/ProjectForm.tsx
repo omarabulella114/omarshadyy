@@ -27,6 +27,7 @@ export default function ProjectForm({ projectId }: ProjectFormProps) {
   const coverInputRef = useRef<HTMLInputElement>(null);
   const ogInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
+  const videoInputRef = useRef<HTMLInputElement>(null);
 
   const [galleryImages, setGalleryImages] = useState<{ id?: string, image_url: string, display_order: number }[]>([]);
   const [deletedGalleryImages, setDeletedGalleryImages] = useState<string[]>([]);
@@ -38,6 +39,7 @@ export default function ProjectForm({ projectId }: ProjectFormProps) {
     role: "",
     year: new Date().getFullYear().toString(),
     video_url: "",
+    video_file_url: "",
     cover_image_url: "",
     is_published: false,
     meta_title: "",
@@ -59,6 +61,7 @@ export default function ProjectForm({ projectId }: ProjectFormProps) {
         role: data.role || "",
         year: data.year || "",
         video_url: data.video_url || "",
+        video_file_url: data.video_file_url || "",
         cover_image_url: data.cover_image_url || "",
         is_published: data.is_published || false,
         meta_title: data.meta_title || "",
@@ -436,21 +439,68 @@ export default function ProjectForm({ projectId }: ProjectFormProps) {
           />
         </div>
 
-        {/* Video URL */}
-        <div>
+        {/* Video Upload OR URL */}
+        <div className="pt-6 border-t border-white/10">
           <label className={labelClass}>
             <Video size={12} className="inline mr-2" />
-            Video URL
+            Project Video
           </label>
-          <input
-            type="text"
-            name="video_url"
-            value={formData.video_url}
-            onChange={handleChange}
-            placeholder="https://www.youtube.com/watch?v=... or https://vimeo.com/..."
-            className={inputClass}
-          />
-          <p className="text-xs text-gray-600 mt-2">Paste a standard Vimeo or YouTube link. It will automatically convert to a playable video.</p>
+          
+          <div className="space-y-4 mt-4">
+            {/* Direct Upload */}
+            <div>
+              <p className="text-xs text-white mb-2">Option A: Upload Video File</p>
+              <div className="flex gap-3">
+                <input
+                  type="text"
+                  name="video_file_url"
+                  value={formData.video_file_url}
+                  onChange={handleChange}
+                  placeholder="https://... (or click upload)"
+                  className={inputClass}
+                />
+                <button
+                  type="button"
+                  onClick={() => videoInputRef.current?.click()}
+                  className="shrink-0 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-gray-400 hover:text-white hover:border-white/30 transition-colors flex items-center gap-2"
+                >
+                  {uploadingField === "video_file_url" ? (
+                    <Loader2 size={16} className="animate-spin" />
+                  ) : (
+                    <Upload size={16} />
+                  )}
+                  Upload .mp4
+                </button>
+                <input
+                  ref={videoInputRef}
+                  type="file"
+                  accept="video/*"
+                  className="hidden"
+                  onChange={(e) => handleFileInput(e, "video_file_url")}
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 py-2">
+              <div className="flex-1 h-px bg-white/10" />
+              <span className="text-xs text-gray-600">OR</span>
+              <div className="flex-1 h-px bg-white/10" />
+            </div>
+
+            {/* Embed URL */}
+            <div>
+              <p className="text-xs text-white mb-2">Option B: Embed YouTube / Vimeo</p>
+              <input
+                type="text"
+                name="video_url"
+                value={formData.video_url}
+                onChange={handleChange}
+                placeholder="https://www.youtube.com/watch?v=... or https://vimeo.com/..."
+                className={inputClass}
+              />
+              <p className="text-xs text-gray-600 mt-2">Paste a standard Vimeo or YouTube link. It will automatically convert to a playable video.</p>
+            </div>
+          </div>
         </div>
       </section>
 

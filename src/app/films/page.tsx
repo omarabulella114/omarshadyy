@@ -14,9 +14,10 @@ export const metadata = {
 export default async function FilmsPage() {
   const { data: films } = await supabase
     .from("projects")
-    .select("*")
+    .select("id, title, cover_image_url")
     .eq("category", "film")
     .eq("is_published", true)
+    .order("display_order", { ascending: true })
     .order("created_at", { ascending: false });
 
   return (
@@ -50,13 +51,11 @@ export default async function FilmsPage() {
                   className="object-cover w-full h-full transform group-hover:scale-105 transition-all duration-1000 ease-out"
                 />
               </div>
-              <div className="flex items-baseline justify-between gap-3">
-                <h2 className={`text-lg md:text-2xl font-bold tracking-wide uppercase text-black group-hover:opacity-60 transition-opacity duration-300 ${playfair.className}`}>
+              <div className="flex justify-center text-center mt-2">
+                <h2 className={`text-lg md:text-xl font-bold tracking-widest uppercase text-black group-hover:opacity-60 transition-opacity duration-300 ${playfair.className}`}>
                   {film.title}
                 </h2>
-                <p className="text-xs tracking-[0.2em] text-gray-500 uppercase shrink-0">{film.year}</p>
               </div>
-              {film.role && <p className="text-xs tracking-[0.15em] text-gray-500 uppercase mt-1">{film.role}</p>}
             </Link>
           ))}
         </div>
