@@ -30,8 +30,10 @@ export default function Navbar() {
         {/* Logo */}
         <Link
           href="/"
-          className={`text-lg sm:text-2xl font-bold italic tracking-wide z-50 relative transition-all duration-300 ${playfair.className}`}
-          style={pathname === "/" ? { color: "rgba(255,255,255,0.8)", textShadow: "0 2px 8px rgba(0,0,0,0.9)" } : { color: "#000" }}
+          className={`text-lg sm:text-2xl font-bold italic tracking-wide z-50 relative transition-all duration-300 ${playfair.className} ${
+            pathname === "/" ? "[color:rgba(255,255,255,0.8)] hover:[color:rgba(255,255,255,1)]" : "[color:#050505] hover:opacity-70"
+          }`}
+          style={pathname === "/" ? { textShadow: "0 2px 8px rgba(0,0,0,1)" } : {}}
           onClick={() => setIsOpen(false)}
         >
           Omar Shady
@@ -40,8 +42,10 @@ export default function Navbar() {
         {/* Hamburger Button — larger tap target on mobile */}
         <button
           onClick={toggleMenu}
-          className="z-50 relative p-3 -mr-2 transition-all duration-300 focus:outline-none"
-          style={pathname === "/" ? { color: "rgba(255,255,255,0.8)", filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.9))" } : { color: "#000" }}
+          className={`z-50 relative p-3 -mr-2 transition-all duration-300 focus:outline-none ${
+            pathname === "/" ? "[color:rgba(255,255,255,0.8)] hover:[color:rgba(255,255,255,1)]" : "[color:#050505] hover:opacity-70"
+          }`}
+          style={pathname === "/" ? { filter: "drop-shadow(0 2px 8px rgba(0,0,0,1))" } : {}}
           aria-label="Toggle menu"
         >
           {isOpen ? <X size={24} strokeWidth={2} /> : <Menu size={24} strokeWidth={2} />}

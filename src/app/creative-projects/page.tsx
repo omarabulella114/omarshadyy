@@ -14,7 +14,7 @@ export const metadata = {
 export default async function CreativeProjectsPage() {
   const { data: projects } = await supabase
     .from("projects")
-    .select("id, title, cover_image_url, cover_fit")
+    .select("id, title, cover_image_url, cover_position")
     .eq("category", "creative")
     .eq("is_published", true)
     .order("display_order", { ascending: true })
@@ -48,8 +48,8 @@ export default async function CreativeProjectsPage() {
                 <img
                   src={project.cover_image_url || "/placeholder-creative.jpg"}
                   alt={project.title}
-                  className="w-full h-full transform group-hover:scale-105 transition-all duration-1000 ease-out"
-                  style={{ objectFit: (project.cover_fit as "cover" | "contain") || "cover" }}
+                  className="w-full h-full object-cover transform group-hover:scale-105 transition-all duration-1000 ease-out"
+                  style={{ objectPosition: project.cover_position || "center" }}
                 />
               </div>
               <div className="flex justify-center text-center mt-2">
