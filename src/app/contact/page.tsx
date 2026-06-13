@@ -1,6 +1,6 @@
-import { InstagramIcon, VimeoIcon, WhatsAppIcon } from "@/components/Icons";
+import { InstagramIcon, VimeoIcon } from "@/components/Icons";
 import { Playfair_Display } from "next/font/google";
-import { Mail, Phone } from "lucide-react";
+import { Mail } from "lucide-react";
 
 const playfair = Playfair_Display({ subsets: ["latin"], weight: ["400", "700"] });
 
@@ -30,18 +30,11 @@ export default function ContactPage() {
           </p>
 
           <div className="space-y-4 md:space-y-5">
-            <a href="mailto:contact@omarshady.com"
+            <a href="mailto:omarshadyy9@gmail.com"
               className="flex items-center gap-4 group text-gray-800 hover:text-black transition-colors duration-300 active:opacity-70">
               <Mail size={18} strokeWidth={2} className="text-gray-500 group-hover:text-black transition-colors shrink-0" />
               <span className="text-sm md:text-base tracking-wide font-light border-b border-black/10 group-hover:border-black/50 pb-1 transition-colors">
-                contact@omarshady.com
-              </span>
-            </a>
-            <a href="tel:+1234567890"
-              className="flex items-center gap-4 group text-gray-800 hover:text-black transition-colors duration-300 active:opacity-70">
-              <Phone size={18} strokeWidth={2} className="text-gray-500 group-hover:text-black transition-colors shrink-0" />
-              <span className="text-sm md:text-base tracking-wide font-light border-b border-black/10 group-hover:border-black/50 pb-1 transition-colors">
-                +1 234 567 890
+                omarshadyy9@gmail.com
               </span>
             </a>
           </div>
@@ -54,7 +47,6 @@ export default function ContactPage() {
             {[
               { href: "https://www.instagram.com/omarshadyy?igsh=MW1yd3gwcWR1Y2c3eQ==", Icon: InstagramIcon, label: "Instagram", sub: "@omarshadyy", target: "_blank" },
               { href: "#", Icon: VimeoIcon, label: "Vimeo", sub: "Portfolio & Films", target: undefined },
-              { href: "#", Icon: WhatsAppIcon, label: "WhatsApp", sub: "Direct message", target: undefined },
             ].map(({ href, Icon, label, sub, target }) => (
               <a key={label} href={href} target={target} rel={target ? "noopener noreferrer" : undefined}
                 className="flex items-center gap-4 md:gap-5 group active:opacity-70">

@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 import { InstagramIcon } from "@/components/Icons";
-import { Mail, Phone } from "lucide-react";
+import { Mail } from "lucide-react";
 import { Playfair_Display } from "next/font/google";
 
 const playfair = Playfair_Display({ subsets: ["latin"], weight: ["400", "700"] });
@@ -69,17 +69,13 @@ export default async function Home() {
 
             {/* Social Icons */}
             <div className="flex gap-6 items-center">
-              <a href="mailto:contact@omarshady.com" aria-label="Email"
+              <a href="mailto:omarshadyy9@gmail.com" aria-label="Email"
                 className="text-white/70 hover:text-white transition-all duration-300 active:scale-90 drop-shadow-[0_2px_8px_rgba(0,0,0,1)]">
                 <Mail size={22} strokeWidth={1.5} />
               </a>
               <a href="https://www.instagram.com/omarshadyy?igsh=MW1yd3gwcWR1Y2c3eQ==" target="_blank" rel="noopener noreferrer" aria-label="Instagram"
                 className="text-white/70 hover:text-white transition-all duration-300 active:scale-90 drop-shadow-[0_2px_8px_rgba(0,0,0,1)]">
                 <InstagramIcon size={22} />
-              </a>
-              <a href="tel:+1234567890" aria-label="Phone"
-                className="text-white/70 hover:text-white transition-all duration-300 active:scale-90 drop-shadow-[0_2px_8px_rgba(0,0,0,1)]">
-                <Phone size={22} strokeWidth={1.5} />
               </a>
             </div>
           </div>
