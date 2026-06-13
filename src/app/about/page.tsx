@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Playfair_Display } from "next/font/google";
 
 const playfair = Playfair_Display({ subsets: ["latin"], weight: ["400", "700"] });
@@ -46,17 +47,22 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="mt-10 md:mt-14 pt-8 md:pt-10 border-t border-black/10 grid grid-cols-3 gap-4 md:gap-8 text-center">
-            {[
-              { label: "Films", value: "—" },
-              { label: "Projects", value: "—" },
-              { label: "Years", value: "—" },
-            ].map(({ label, value }) => (
-              <div key={label}>
-                <p className={`text-2xl md:text-4xl font-bold text-black ${playfair.className}`}>{value}</p>
-                <p className="text-xs tracking-[0.2em] text-gray-500 uppercase mt-1 md:mt-2">{label}</p>
-              </div>
-            ))}
+          <div className="mt-10 md:mt-14 pt-8 md:pt-10 border-t border-black/10 flex items-center gap-8">
+            <Link 
+              href="/films"
+              className="group relative uppercase tracking-[0.3em] text-sm font-light text-gray-500 hover:text-black transition-colors duration-300"
+            >
+              View Films
+              <span className="absolute -bottom-2 left-0 w-0 h-px bg-black group-hover:w-full transition-all duration-500" />
+            </Link>
+            
+            <Link 
+              href="/creative-projects"
+              className="group relative uppercase tracking-[0.3em] text-sm font-light text-gray-500 hover:text-black transition-colors duration-300"
+            >
+              View Creative
+              <span className="absolute -bottom-2 left-0 w-0 h-px bg-black group-hover:w-full transition-all duration-500" />
+            </Link>
           </div>
         </div>
       </div>
