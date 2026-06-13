@@ -9,10 +9,10 @@ export default function AdminSettings() {
   const [initialLoad, setInitialLoad] = useState(true);
   const [settingsId, setSettingsId] = useState<string | null>(null);
 
-  const [formData, setFormData] = useState({
     hero_media_url: "",
     hero_media_type: "image",
     bio_text: "",
+    about_image_url: "",
   });
 
   useEffect(() => {
@@ -27,6 +27,7 @@ export default function AdminSettings() {
         hero_media_url: data.hero_media_url || "",
         hero_media_type: data.hero_media_type || "image",
         bio_text: data.bio_text || "",
+        about_image_url: data.about_image_url || "",
       });
     }
     setInitialLoad(false);
@@ -119,6 +120,25 @@ export default function AdminSettings() {
           )}
           {formData.hero_media_url && formData.hero_media_type === "video" && (
             <video src={formData.hero_media_url} autoPlay loop muted className="h-48 object-cover mt-6 rounded border border-white/10" />
+          )}
+        </div>
+
+        {/* About Page Portrait */}
+        <div className="border-t border-white/10 pt-6 mt-2">
+          <h3 className="text-lg font-medium mb-4">About Page Portrait</h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Image URL (or upload)</label>
+              <div className="flex flex-col gap-2">
+                <input type="text" name="about_image_url" value={formData.about_image_url} onChange={handleChange} className="w-full bg-white/5 border border-white/10 rounded p-3 text-white" placeholder="https://..." />
+                <input type="file" accept="image/*" onChange={(e) => uploadFile(e, 'about_image_url')} className="w-full bg-white/5 border border-white/10 rounded p-2 text-white" />
+              </div>
+            </div>
+          </div>
+          
+          {formData.about_image_url && (
+            <img src={formData.about_image_url} alt="About Portrait Preview" className="h-48 object-cover mt-6 rounded border border-white/10" />
           )}
         </div>
 

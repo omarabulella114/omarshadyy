@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { supabase } from "@/lib/supabase";
 import { Playfair_Display } from "next/font/google";
 
 const playfair = Playfair_Display({ subsets: ["latin"], weight: ["400", "700"] });
@@ -9,7 +10,10 @@ export const metadata = {
   description: "Omar Shady — filmmaker, photographer, and creative director based worldwide.",
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const { data: settings } = await supabase.from("site_settings").select("*").limit(1).single();
+  const imageUrl = settings?.about_image_url || "/about-portrait.jpeg";
+
   return (
     <div className="pt-28 md:pt-36 px-6 md:px-14 max-w-6xl mx-auto w-full min-h-screen pb-20 md:pb-24">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-24 items-start">
@@ -17,7 +21,7 @@ export default function AboutPage() {
         {/* Portrait — shorter on mobile */}
         <div className="relative aspect-[4/5] md:aspect-[3/4] w-full overflow-hidden animate-fade-in-up bg-black/5">
           <Image
-            src="/about-portrait.jpeg"
+            src={imageUrl}
             alt="Omar Shady"
             fill
             className="object-cover object-top transition-all duration-700"
