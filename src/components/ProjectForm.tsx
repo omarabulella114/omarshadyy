@@ -440,38 +440,59 @@ export default function ProjectForm({ projectId }: ProjectFormProps) {
             className={`${inputClass} mt-3`}
           />
 
-          {/* Cover Focal Point */}
-          <div className="mt-4">
-            <label className={labelClass}>Focal Point (which part to show)</label>
-            <div className="mt-2 inline-grid grid-cols-3 gap-1 p-2 bg-white/5 border border-white/10 rounded-lg">
-              {[
-                { label: "↖", value: "top left" },
-                { label: "↑", value: "top center" },
-                { label: "↗", value: "top right" },
-                { label: "←", value: "center left" },
-                { label: "●", value: "center" },
-                { label: "→", value: "center right" },
-                { label: "↙", value: "bottom left" },
-                { label: "↓", value: "bottom center" },
-                { label: "↘", value: "bottom right" },
-              ].map(({ label, value }) => (
-                <button
-                  key={value}
-                  type="button"
-                  title={value}
-                  onClick={() => setFormData(p => ({ ...p, cover_position: value }))}
-                  className={`w-9 h-9 rounded text-sm font-bold transition-all duration-150 ${
-                    formData.cover_position === value
-                      ? "bg-white text-black"
-                      : "text-gray-500 hover:bg-white/10 hover:text-white"
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
+          {/* Interactive Focal Point Picker — only shown when image is present */}
+          {formData.cover_image_url && (
+            <div className="mt-4">
+              <label className={labelClass}>Focal Point — click or drag on the image</label>
+              <div
+                className="relative w-full overflow-hidden rounded-lg border border-white/10 cursor-crosshair mt-2"
+                style={{ aspectRatio: "16/9" }}
+                onMouseDown={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const x = Math.round(((e.clientX - rect.left) / rect.width) * 100);
+                  const y = Math.round(((e.clientY - rect.top) / rect.height) * 100);
+                  setFormData(p => ({ ...p, cover_position: `${x}% ${y}%` }));
+                }}
+                onMouseMove={(e) => {
+                  if (e.buttons !== 1) return;
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const x = Math.round(((e.clientX - rect.left) / rect.width) * 100);
+                  const y = Math.round(((e.clientY - rect.top) / rect.height) * 100);
+                  setFormData(p => ({ ...p, cover_position: `${x}% ${y}%` }));
+                }}
+              >
+                {/* The image fills the box with the chosen focal point */}
+                <img
+                  src={formData.cover_image_url}
+                  alt="Focal point preview"
+                  className="w-full h-full object-cover pointer-events-none select-none"
+                  style={{ objectPosition: formData.cover_position || "center" }}
+                  draggable={false}
+                />
+                {/* Focal point dot */}
+                {(() => {
+                  const pos = formData.cover_position || "50% 50%";
+                  const parts = pos.match(/(\d+)%\s*(\d+)%/);
+                  if (!parts) return null;
+                  return (
+                    <div
+                      className="absolute w-5 h-5 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+                      style={{ left: `${parts[1]}%`, top: `${parts[2]}%` }}
+                    >
+                      <div className="w-full h-full rounded-full border-2 border-white shadow-[0_0_0_1px_rgba(0,0,0,0.8)] bg-white/30" />
+                    </div>
+                  );
+                })()}
+                {/* Hint overlay */}
+                <div className="absolute bottom-2 right-2 bg-black/60 text-white text-[10px] px-2 py-1 rounded tracking-wider pointer-events-none">
+                  DRAG TO SET FOCUS
+                </div>
+              </div>
+              <p className="text-xs text-gray-600 mt-2">
+                The white dot shows where the image is anchored when cropped in the gallery.
+              </p>
             </div>
-            <p className="text-xs text-gray-600 mt-2">Select which part of the image stays visible when cropped.</p>
-          </div>
+          )}
         </div>
 
         {/* Video Upload OR URL */}
