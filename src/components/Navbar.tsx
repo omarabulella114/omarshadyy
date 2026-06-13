@@ -30,9 +30,9 @@ export default function Navbar() {
         {/* Logo */}
         <Link
           href="/"
-          className={`text-lg sm:text-2xl font-bold italic tracking-wide z-50 relative transition-opacity duration-300 ${playfair.className} ${
+          className={`text-lg sm:text-2xl font-bold italic tracking-wide z-50 relative transition-all duration-300 ${playfair.className} ${
             pathname === "/"
-              ? "text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] hover:opacity-70 active:opacity-50"
+              ? "text-white/80 drop-shadow-[0_2px_8px_rgba(0,0,0,1)] hover:text-white active:opacity-50"
               : "text-black drop-shadow-[0_1px_8px_rgba(255,255,255,0.9)] hover:opacity-70 active:opacity-50"
           }`}
           onClick={() => setIsOpen(false)}
@@ -43,9 +43,9 @@ export default function Navbar() {
         {/* Hamburger Button — larger tap target on mobile */}
         <button
           onClick={toggleMenu}
-          className={`z-50 relative p-3 -mr-2 transition-opacity duration-300 focus:outline-none ${
+          className={`z-50 relative p-3 -mr-2 transition-all duration-300 focus:outline-none ${
             pathname === "/"
-              ? "text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] hover:opacity-70 active:opacity-50"
+              ? "text-white/80 drop-shadow-[0_2px_8px_rgba(0,0,0,1)] hover:text-white active:opacity-50"
               : "text-black drop-shadow-[0_1px_8px_rgba(255,255,255,0.9)] hover:opacity-70 active:opacity-50"
           }`}
           aria-label="Toggle menu"
