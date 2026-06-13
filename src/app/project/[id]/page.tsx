@@ -112,16 +112,16 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
       {/* Main Media (Video or Image) */}
       <div className="w-full mb-16 animate-fade-in-up animation-delay-200">
         {project.video_file_url ? (
-          <div className="relative aspect-video w-full overflow-hidden bg-black/5">
+          <div className={`relative w-full overflow-hidden bg-black ${project.video_orientation === "vertical" ? "max-w-sm mx-auto aspect-[9/16]" : "aspect-video"}`}>
             <video
               src={project.video_file_url}
               controls
               playsInline
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-contain"
             />
           </div>
         ) : embedUrl ? (
-          <div className="relative aspect-video w-full overflow-hidden bg-gray-100">
+          <div className={`relative w-full overflow-hidden bg-gray-100 ${project.video_orientation === "vertical" ? "max-w-sm mx-auto aspect-[9/16]" : "aspect-video"}`}>
             <iframe
               src={embedUrl}
               className="absolute inset-0 w-full h-full"

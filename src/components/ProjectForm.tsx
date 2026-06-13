@@ -40,6 +40,7 @@ export default function ProjectForm({ projectId }: ProjectFormProps) {
     year: new Date().getFullYear().toString(),
     video_url: "",
     video_file_url: "",
+    video_orientation: "horizontal" as "horizontal" | "vertical",
     cover_image_url: "",
     cover_position: "center" as string,
     is_published: false,
@@ -63,6 +64,7 @@ export default function ProjectForm({ projectId }: ProjectFormProps) {
         year: data.year || "",
         video_url: data.video_url || "",
         video_file_url: data.video_file_url || "",
+        video_orientation: data.video_orientation || "horizontal",
         cover_image_url: data.cover_image_url || "",
         cover_position: data.cover_position || "center",
         is_published: data.is_published || false,
@@ -556,6 +558,33 @@ export default function ProjectForm({ projectId }: ProjectFormProps) {
               />
               <p className="text-xs text-gray-600 mt-2">Paste a standard Vimeo or YouTube link. It will automatically convert to a playable video.</p>
             </div>
+
+            {/* Video Orientation — shown when any video is set */}
+            {(formData.video_file_url || formData.video_url) && (
+              <div className="pt-4 border-t border-white/10">
+                <label className={labelClass}>Video Orientation</label>
+                <div className="grid grid-cols-2 gap-3 mt-2">
+                  {([
+                    { value: "horizontal", label: "⬛ Horizontal", sub: "16:9  —  landscape" },
+                    { value: "vertical",   label: "▬ Vertical",    sub: "9:16  —  portrait / reels" },
+                  ] as const).map(({ value, label, sub }) => (
+                    <button
+                      key={value}
+                      type="button"
+                      onClick={() => setFormData(p => ({ ...p, video_orientation: value }))}
+                      className={`py-3 px-4 rounded-lg border text-left transition-all duration-200 ${
+                        formData.video_orientation === value
+                          ? "border-white bg-white text-black"
+                          : "border-white/20 text-gray-400 hover:border-white/50"
+                      }`}
+                    >
+                      <p className="text-sm font-semibold">{label}</p>
+                      <p className={`text-xs mt-0.5 ${formData.video_orientation === value ? "text-black/60" : "text-gray-600"}`}>{sub}</p>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </section>
