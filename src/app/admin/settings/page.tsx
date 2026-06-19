@@ -48,22 +48,37 @@ export default function AdminSettings() {
   const uploadFile = async (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
     if (!e.target.files || e.target.files.length === 0) return;
     const file = e.target.files[0];
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${Math.random()}.${fileExt}`;
-    const filePath = `${fileName}`;
 
     setLoading(true);
-    const { error: uploadError } = await supabase.storage
-      .from('portfolio-media')
-      .upload(filePath, file);
 
-    if (!uploadError) {
-      const { data } = supabase.storage.from('portfolio-media').getPublicUrl(filePath);
+    try {
+      // 1. Get presigned URL
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fileName: file.name, fileType: file.type }),
+      });
+      const data = await res.json();
+      
+      if (!res.ok) throw new Error(data.error || "Failed to get upload URL");
+
+      // 2. Upload file directly to Cloudflare R2
+      const uploadRes = await fetch(data.presignedUrl, {
+        method: "PUT",
+        headers: { "Content-Type": file.type },
+        body: file,
+      });
+
+      if (!uploadRes.ok) throw new Error("Failed to upload to Cloudflare R2");
+
+      // 3. Save the public URL
       setFormData(prev => ({ ...prev, [field]: data.publicUrl }));
-    } else {
-      alert("Error uploading file: " + uploadError.message);
+    } catch (error: any) {
+      console.error(error);
+      alert("Error uploading file: " + error.message);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

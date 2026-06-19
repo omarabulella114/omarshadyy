@@ -101,30 +101,44 @@ export default function ProjectForm({ projectId }: ProjectFormProps) {
 
   const uploadFile = async (file: File, field: string) => {
     if (!file) return;
-    const fileExt = file.name.split(".").pop();
-    const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${fileExt}`;
 
     setUploadingField(field);
     setUploadProgress(10);
 
-    const { error: uploadError } = await supabase.storage
-      .from("portfolio-media")
-      .upload(fileName, file, { upsert: false });
+    try {
+      // 1. Get presigned URL from our API
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fileName: file.name, fileType: file.type }),
+      });
+      const data = await res.json();
+      
+      if (!res.ok) throw new Error(data.error || "Failed to get upload URL");
+      setUploadProgress(30);
 
-    setUploadProgress(80);
+      // 2. Upload directly to Cloudflare R2
+      const uploadRes = await fetch(data.presignedUrl, {
+        method: "PUT",
+        headers: { "Content-Type": file.type },
+        body: file,
+      });
 
-    if (!uploadError) {
-      const { data } = supabase.storage.from("portfolio-media").getPublicUrl(fileName);
+      if (!uploadRes.ok) throw new Error("Failed to upload to Cloudflare R2");
+      setUploadProgress(80);
+
+      // 3. Save the public URL to form data
       setFormData((prev) => ({ ...prev, [field]: data.publicUrl }));
       setUploadProgress(100);
-    } else {
-      alert("Upload failed: " + uploadError.message);
+    } catch (error: any) {
+      console.error(error);
+      alert("Upload failed: " + error.message);
+    } finally {
+      setTimeout(() => {
+        setUploadingField(null);
+        setUploadProgress(0);
+      }, 600);
     }
-
-    setTimeout(() => {
-      setUploadingField(null);
-      setUploadProgress(0);
-    }, 600);
   };
 
   const handleFileInput = async (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
@@ -134,7 +148,7 @@ export default function ProjectForm({ projectId }: ProjectFormProps) {
 
   const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.length) return;
-    const files = e.target.files;
+    const files = Array.from(e.target.files);
     setUploadingField("gallery");
     setUploadProgress(10);
     
@@ -142,16 +156,30 @@ export default function ProjectForm({ projectId }: ProjectFormProps) {
     const total = files.length;
     let completed = 0;
 
-    for (let i = 0; i < total; i++) {
-      const file = files[i];
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${fileExt}`;
-      
-      const { error } = await supabase.storage.from("portfolio-media").upload(fileName, file, { upsert: false });
-      if (!error) {
-        const { data } = supabase.storage.from("portfolio-media").getPublicUrl(fileName);
-        newImages.push({ image_url: data.publicUrl, display_order: newImages.length });
+    for (const file of files) {
+      try {
+        const res = await fetch("/api/upload", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ fileName: file.name, fileType: file.type }),
+        });
+        const data = await res.json();
+        
+        if (res.ok) {
+          const uploadRes = await fetch(data.presignedUrl, {
+            method: "PUT",
+            headers: { "Content-Type": file.type },
+            body: file,
+          });
+
+          if (uploadRes.ok) {
+            newImages.push({ image_url: data.publicUrl, display_order: newImages.length });
+          }
+        }
+      } catch (error) {
+        console.error("Gallery image upload failed:", error);
       }
+      
       completed++;
       setUploadProgress(10 + Math.floor((completed / total) * 80));
     }
