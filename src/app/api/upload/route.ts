@@ -11,6 +11,8 @@ const S3 = new S3Client({
     secretAccessKey: process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY as string,
   },
   forcePathStyle: true,
+  requestChecksumCalculation: "WHEN_REQUIRED",
+  responseChecksumValidation: "WHEN_REQUIRED",
 });
 
 export async function POST(request: Request) {
