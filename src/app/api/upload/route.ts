@@ -10,6 +10,7 @@ const S3 = new S3Client({
     accessKeyId: process.env.CLOUDFLARE_R2_ACCESS_KEY_ID as string,
     secretAccessKey: process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY as string,
   },
+  forcePathStyle: true,
 });
 
 export async function POST(request: Request) {
