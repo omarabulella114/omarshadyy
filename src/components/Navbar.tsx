@@ -36,8 +36,8 @@ export default function Navbar() {
       <nav
         className={`fixed w-full top-0 z-50 px-6 md:px-8 flex items-center justify-between transition-all duration-300 ${
           scrolled && pathname !== "/"
-            ? "bg-white/95 backdrop-blur-md shadow-sm py-3 md:py-4"
-            : "py-5 md:py-7 bg-transparent"
+            ? "bg-white/95 backdrop-blur-md shadow-sm py-2 md:py-3"
+            : "py-4 md:py-5 bg-transparent"
         }`}
       >
         {/* Logo */}
