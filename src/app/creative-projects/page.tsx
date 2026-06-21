@@ -53,7 +53,7 @@ export default async function CreativeProjectsPage() {
                 />
               </div>
               <div className="flex justify-center text-center mt-2">
-                <h2 className={`text-sm md:text-base font-semibold tracking-widest text-black group-hover:opacity-60 transition-opacity duration-300 ${playfair.className}`}>
+                <h2 className={`text-xs md:text-sm font-medium tracking-[0.2em] text-black/70 group-hover:text-black transition-all duration-300 ${playfair.className}`}>
                   {project.title}
                 </h2>
               </div>

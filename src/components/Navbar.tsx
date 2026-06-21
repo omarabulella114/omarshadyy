@@ -34,16 +34,18 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`fixed w-full top-0 z-50 px-6 md:px-8 py-5 md:py-7 flex items-center justify-between transition-all duration-300 ${
+        className={`fixed w-full top-0 z-50 px-6 md:px-8 flex items-center justify-between transition-all duration-300 ${
           scrolled && pathname !== "/"
-            ? "bg-white/95 backdrop-blur-md shadow-sm"
-            : "bg-transparent"
+            ? "bg-white/95 backdrop-blur-md shadow-sm py-3 md:py-4"
+            : "py-5 md:py-7 bg-transparent"
         }`}
       >
         {/* Logo */}
         <Link
           href="/"
-          className={`text-lg sm:text-2xl font-bold italic tracking-wide z-50 relative transition-all duration-300 ${playfair.className} ${
+          className={`font-bold italic tracking-wide z-50 relative transition-all duration-300 ${playfair.className} ${
+            scrolled && pathname !== "/" ? "text-base sm:text-lg" : "text-lg sm:text-2xl"
+          } ${
             pathname === "/" ? "[color:rgba(255,255,255,0.8)] hover:[color:rgba(255,255,255,1)]" : "[color:#050505] hover:opacity-70"
           }`}
           style={pathname === "/" ? { textShadow: "0 2px 8px rgba(0,0,0,1)" } : {}}
