@@ -44,7 +44,7 @@ export default async function CreativeProjectsPage() {
               className="group block animate-fade-in-up"
               style={{ animationDelay: `${index * 80}ms` }}
             >
-              <div className="relative aspect-[4/5] w-full overflow-hidden mb-4 bg-black/5">
+              <div className="relative aspect-[3/4] w-full overflow-hidden mb-4 bg-black/5">
                 <img
                   src={project.cover_image_url || "/placeholder-creative.jpg"}
                   alt={project.title}
@@ -53,7 +53,7 @@ export default async function CreativeProjectsPage() {
                 />
               </div>
               <div className="flex justify-center text-center mt-2">
-                <h2 className={`text-base md:text-lg font-bold tracking-widest uppercase text-black group-hover:opacity-60 transition-opacity duration-300 ${playfair.className}`}>
+                <h2 className={`text-sm md:text-base font-semibold tracking-widest text-black group-hover:opacity-60 transition-opacity duration-300 ${playfair.className}`}>
                   {project.title}
                 </h2>
               </div>

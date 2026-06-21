@@ -100,7 +100,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   return (
     <div className="pt-32 px-6 max-w-5xl mx-auto w-full min-h-screen pb-24">
       <div className="mb-12 animate-fade-in-up">
-        <h1 className="text-4xl md:text-6xl font-bold uppercase tracking-widest mb-4 text-black">
+        <h1 className="text-4xl md:text-6xl font-bold tracking-widest mb-4 text-black">
           {project.title}
         </h1>
         <div className="flex flex-wrap gap-4 text-sm tracking-wider text-gray-500 uppercase">

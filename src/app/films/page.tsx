@@ -44,7 +44,7 @@ export default async function FilmsPage() {
               className="group block animate-fade-in-up"
               style={{ animationDelay: `${index * 80}ms` }}
             >
-              <div className="relative aspect-video w-full overflow-hidden mb-4 bg-black/5">
+              <div className="relative aspect-[3/4] w-full overflow-hidden mb-4 bg-black/5">
                 <img
                   src={film.cover_image_url || "/placeholder-film.jpg"}
                   alt={film.title}
@@ -53,7 +53,7 @@ export default async function FilmsPage() {
                 />
               </div>
               <div className="flex justify-center text-center mt-2">
-                <h2 className={`text-lg md:text-xl font-bold tracking-widest uppercase text-black group-hover:opacity-60 transition-opacity duration-300 ${playfair.className}`}>
+                <h2 className={`text-base md:text-lg font-semibold tracking-widest text-black group-hover:opacity-60 transition-opacity duration-300 ${playfair.className}`}>
                   {film.title}
                 </h2>
               </div>

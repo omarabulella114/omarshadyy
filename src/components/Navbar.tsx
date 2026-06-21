@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -20,13 +20,26 @@ const navLinks = [
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
   return (
     <>
-      <nav className="fixed w-full top-0 z-50 px-6 md:px-8 py-5 md:py-7 flex items-center justify-between">
+      <nav
+        className={`fixed w-full top-0 z-50 px-6 md:px-8 py-5 md:py-7 flex items-center justify-between transition-all duration-300 ${
+          scrolled && pathname !== "/"
+            ? "bg-white/95 backdrop-blur-md shadow-sm"
+            : "bg-transparent"
+        }`}
+      >
         {/* Logo */}
         <Link
           href="/"
