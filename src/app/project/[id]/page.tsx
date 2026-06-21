@@ -97,8 +97,23 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
 
   const embedUrl = project.video_url ? getEmbedUrl(project.video_url) : "";
 
+  const backHref = project.category === "film" ? "/films" : "/creative-projects";
+  const backLabel = project.category === "film" ? "Films" : "Creative Projects";
+
   return (
     <div className="pt-32 px-6 max-w-5xl mx-auto w-full min-h-screen pb-24">
+
+      {/* Back Button */}
+      <div className="mb-8 animate-fade-in-up">
+        <Link
+          href={backHref}
+          className="inline-flex items-center gap-2 text-xs tracking-[0.25em] uppercase text-gray-400 hover:text-black transition-colors duration-300 group"
+        >
+          <span className="inline-block transition-transform duration-300 group-hover:-translate-x-1">←</span>
+          {backLabel}
+        </Link>
+      </div>
+
       <div className="mb-12 animate-fade-in-up">
         <h1 className="text-4xl md:text-6xl font-bold tracking-widest mb-4 text-black">
           {project.title}
