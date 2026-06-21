@@ -44,7 +44,7 @@ export default async function CreativeProjectsPage() {
               className="group block animate-fade-in-up"
               style={{ animationDelay: `${index * 80}ms` }}
             >
-              <div className="relative aspect-[3/4] w-full overflow-hidden mb-4 bg-black/5">
+              <div className="relative aspect-[4/3] w-full overflow-hidden mb-4 bg-black/5">
                 <img
                   src={project.cover_image_url || "/placeholder-creative.jpg"}
                   alt={project.title}

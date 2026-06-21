@@ -44,7 +44,7 @@ export default async function FilmsPage() {
               className="group block animate-fade-in-up"
               style={{ animationDelay: `${index * 80}ms` }}
             >
-              <div className="relative aspect-[3/4] w-full overflow-hidden mb-4 bg-black/5">
+              <div className="relative aspect-[4/3] w-full overflow-hidden mb-4 bg-black/5">
                 <img
                   src={film.cover_image_url || "/placeholder-film.jpg"}
                   alt={film.title}
