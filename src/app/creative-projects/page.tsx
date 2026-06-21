@@ -36,7 +36,7 @@ export default async function CreativeProjectsPage() {
 
       {projects && projects.length > 0 ? (
         /* Clean 3-column Symmetrical Grid */
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 md:gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
           {projects.map((project, index) => (
             <Link
               href={`/project/${project.id}`}

@@ -36,7 +36,7 @@ export default async function FilmsPage() {
 
       {films && films.length > 0 ? (
         /* Clean 2-column Symmetrical Grid */
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
           {films.map((film, index) => (
             <Link
               href={`/project/${film.id}`}
