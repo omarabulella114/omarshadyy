@@ -76,7 +76,23 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
     .eq("project_id", resolvedParams.id)
     .order("display_order", { ascending: true });
 
-  // Fetch sibling projects in the same category for Next/Prev navigation
+  // Fetch all videos for this project
+  const { data: projectVideos } = await supabase
+    .from("project_videos")
+    .select("*")
+    .eq("project_id", resolvedParams.id)
+    .order("display_order", { ascending: true });
+
+  const embedUrl = project.video_url ? getEmbedUrl(project.video_url) : "";
+
+  // Build final video list: prefer project_videos table, fall back to legacy single video fields
+  const videoList = (projectVideos && projectVideos.length > 0)
+    ? projectVideos
+    : (project.video_file_url || project.video_url)
+      ? [{ id: "legacy", title: "", video_file_url: project.video_file_url || "", video_url: project.video_url || "", video_orientation: project.video_orientation || "horizontal" }]
+      : [];
+
+  // Fetch sibling projects for Prev/Next nav
   const { data: categoryProjects } = await supabase
     .from("projects")
     .select("id, title")
@@ -90,15 +106,9 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
 
   if (categoryProjects) {
     const currentIndex = categoryProjects.findIndex((p) => p.id === project.id);
-    if (currentIndex > 0) {
-      prevProject = categoryProjects[currentIndex - 1]; // Newer
-    }
-    if (currentIndex !== -1 && currentIndex < categoryProjects.length - 1) {
-      nextProject = categoryProjects[currentIndex + 1]; // Older
-    }
+    if (currentIndex > 0) prevProject = categoryProjects[currentIndex - 1];
+    if (currentIndex !== -1 && currentIndex < categoryProjects.length - 1) nextProject = categoryProjects[currentIndex + 1];
   }
-
-  const embedUrl = project.video_url ? getEmbedUrl(project.video_url) : "";
 
   const backHref = project.category === "film" ? "/films" : "/creative-projects";
   const backLabel = project.category === "film" ? "Films" : "Creative Projects";
@@ -127,39 +137,42 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
         </div>
       </div>
 
-      {/* Main Media (Video or Image) */}
-      <div className="w-full mb-16 animate-fade-in-up animation-delay-200">
-        {project.video_file_url ? (
-          <div className={`relative w-full overflow-hidden bg-black ${project.video_orientation === "vertical" ? "max-w-sm mx-auto aspect-[9/16]" : "aspect-video"}`}>
-            <video
-              src={project.video_file_url}
-              controls
-              playsInline
-              className="absolute inset-0 w-full h-full object-contain"
-            />
-          </div>
-        ) : embedUrl ? (
-          <div className={`relative w-full overflow-hidden bg-gray-100 ${project.video_orientation === "vertical" ? "max-w-sm mx-auto aspect-[9/16]" : "aspect-video"}`}>
-            <iframe
-              src={embedUrl}
-              className="absolute inset-0 w-full h-full"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            ></iframe>
-          </div>
-        ) : (
-          project.cover_image_url && (
-            <div className="relative w-full overflow-hidden bg-black/5">
-              <img
-                src={project.cover_image_url}
-                alt={project.title}
-                className="w-full h-auto object-cover"
-              />
-            </div>
-          )
-        )}
-      </div>
+      {/* Videos Grid */}
+      {videoList.length > 0 && (
+        <div className={`w-full mb-16 animate-fade-in-up animation-delay-200 ${
+          videoList.length === 1 ? "" : "grid grid-cols-1 md:grid-cols-2 gap-6"
+        }`}>
+          {videoList.map((vid: any, idx: number) => {
+            const embed = vid.video_url ? getEmbedUrl(vid.video_url) : "";
+            const isVertical = vid.video_orientation === "vertical";
+            return (
+              <div key={vid.id || idx} className="space-y-3">
+                {vid.title && (
+                  <p className={`text-sm font-medium tracking-wider text-black/70 ${playfair.className}`}>{vid.title}</p>
+                )}
+                <div className={`relative w-full overflow-hidden bg-black ${
+                  isVertical
+                    ? (videoList.length === 1 ? "max-w-sm mx-auto aspect-[9/16]" : "aspect-[9/16]")
+                    : "aspect-video"
+                }`}>
+                  {vid.video_file_url ? (
+                    <video src={vid.video_file_url} controls playsInline className="absolute inset-0 w-full h-full object-contain" />
+                  ) : embed ? (
+                    <iframe src={embed} className="absolute inset-0 w-full h-full" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                  ) : null}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Fallback: cover image if no videos */}
+      {videoList.length === 0 && project.cover_image_url && (
+        <div className="relative w-full overflow-hidden bg-black/5 mb-16">
+          <img src={project.cover_image_url} alt={project.title} className="w-full h-auto object-cover" />
+        </div>
+      )}
 
       {/* Description */}
       {project.description && (

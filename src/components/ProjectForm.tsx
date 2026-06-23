@@ -32,6 +32,11 @@ export default function ProjectForm({ projectId }: ProjectFormProps) {
   const [galleryImages, setGalleryImages] = useState<{ id?: string, image_url: string, display_order: number }[]>([]);
   const [deletedGalleryImages, setDeletedGalleryImages] = useState<string[]>([]);
 
+  type VideoEntry = { id?: string; title: string; video_file_url: string; video_url: string; video_orientation: "horizontal" | "vertical"; uploading?: boolean; };
+  const [videos, setVideos] = useState<VideoEntry[]>([]);
+  const [deletedVideoIds, setDeletedVideoIds] = useState<string[]>([]);
+  const videoFileRefs = useRef<(HTMLInputElement | null)[]>([]);
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -85,6 +90,22 @@ export default function ProjectForm({ projectId }: ProjectFormProps) {
         id: img.id,
         image_url: img.image_url,
         display_order: img.display_order
+      })));
+    }
+
+    const { data: vids } = await supabase
+      .from("project_videos")
+      .select("*")
+      .eq("project_id", projectId)
+      .order("display_order", { ascending: true });
+
+    if (vids && vids.length > 0) {
+      setVideos(vids.map((v: any) => ({
+        id: v.id,
+        title: v.title || "",
+        video_file_url: v.video_file_url || "",
+        video_url: v.video_url || "",
+        video_orientation: v.video_orientation || "horizontal",
       })));
     }
 
@@ -224,15 +245,35 @@ export default function ProjectForm({ projectId }: ProjectFormProps) {
       // 2. Insert new or update existing gallery images
       if (galleryImages.length > 0) {
         const upsertData = galleryImages.map((img, idx) => ({
-          ...(img.id ? { id: img.id } : {}), // only include ID if it exists
+          ...(img.id ? { id: img.id } : {}),
           project_id: newProjectId,
           image_url: img.image_url,
-          display_order: idx, // reorder based on current array position
+          display_order: idx,
         }));
         await supabase.from("project_images").upsert(upsertData);
       } else {
-        // If they cleared the whole gallery but didn't track deletions properly
         await supabase.from("project_images").delete().eq("project_id", newProjectId);
+      }
+
+      // 3. Delete removed videos
+      if (deletedVideoIds.length > 0) {
+        await supabase.from("project_videos").delete().in("id", deletedVideoIds);
+      }
+
+      // 4. Upsert all videos
+      if (videos.length > 0) {
+        const videoUpsert = videos.map((v, idx) => ({
+          ...(v.id ? { id: v.id } : {}),
+          project_id: newProjectId,
+          title: v.title,
+          video_file_url: v.video_file_url,
+          video_url: v.video_url,
+          video_orientation: v.video_orientation,
+          display_order: idx,
+        }));
+        await supabase.from("project_videos").upsert(videoUpsert);
+      } else {
+        await supabase.from("project_videos").delete().eq("project_id", newProjectId);
       }
     }
 
@@ -531,94 +572,126 @@ export default function ProjectForm({ projectId }: ProjectFormProps) {
           )}
         </div>
 
-        {/* Video Upload OR URL */}
+        {/* ── Videos Section ─────────────────────────────── */}
         <div className="pt-6 border-t border-white/10">
-          <label className={labelClass}>
-            <Video size={12} className="inline mr-2" />
-            Project Video
-          </label>
-          
-          <div className="space-y-4 mt-4">
-            {/* Direct Upload */}
-            <div>
-              <p className="text-xs text-white mb-2">Option A: Upload Video File</p>
-              <div className="flex gap-3">
+          <div className="flex items-center justify-between mb-4">
+            <label className={labelClass}>
+              <Video size={12} className="inline mr-2" />
+              Videos
+            </label>
+            <button
+              type="button"
+              onClick={() => setVideos(v => [...v, { title: "", video_file_url: "", video_url: "", video_orientation: "horizontal" }])}
+              className="text-xs text-gray-400 hover:text-white border border-white/10 hover:border-white/30 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5"
+            >
+              + Add Video
+            </button>
+          </div>
+
+          {videos.length === 0 && (
+            <p className="text-xs text-gray-600 py-4 text-center border border-dashed border-white/10 rounded-lg">
+              No videos yet — click "Add Video" to add one or more
+            </p>
+          )}
+
+          <div className="space-y-4">
+            {videos.map((vid, idx) => (
+              <div key={idx} className="bg-white/3 border border-white/10 rounded-xl p-4 space-y-3">
+                {/* Header row */}
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-gray-500 tracking-widest uppercase">Video {idx + 1}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (vid.id) setDeletedVideoIds(d => [...d, vid.id!]);
+                      setVideos(v => v.filter((_, i) => i !== idx));
+                    }}
+                    className="text-gray-600 hover:text-red-400 transition-colors"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+
+                {/* Optional title */}
                 <input
                   type="text"
-                  name="video_file_url"
-                  value={formData.video_file_url}
-                  onChange={handleChange}
-                  placeholder="https://... (or click upload)"
+                  value={vid.title}
+                  onChange={e => setVideos(v => v.map((item, i) => i === idx ? { ...item, title: e.target.value } : item))}
+                  placeholder="Video title (optional)"
                   className={inputClass}
                 />
-                <button
-                  type="button"
-                  onClick={() => videoInputRef.current?.click()}
-                  className="shrink-0 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-gray-400 hover:text-white hover:border-white/30 transition-colors flex items-center gap-2"
-                >
-                  {uploadingField === "video_file_url" ? (
-                    <Loader2 size={16} className="animate-spin" />
-                  ) : (
-                    <Upload size={16} />
-                  )}
-                  Upload .mp4
-                </button>
-                <input
-                  ref={videoInputRef}
-                  type="file"
-                  accept="video/*"
-                  className="hidden"
-                  onChange={(e) => handleFileInput(e, "video_file_url")}
-                />
-              </div>
-            </div>
 
-            <div className="flex items-center gap-3 py-2">
-              <div className="flex-1 h-px bg-white/10" />
-              <span className="text-xs text-gray-600">OR</span>
-              <div className="flex-1 h-px bg-white/10" />
-            </div>
-
-            {/* Embed URL */}
-            <div>
-              <p className="text-xs text-white mb-2">Option B: Embed YouTube / Vimeo</p>
-              <input
-                type="text"
-                name="video_url"
-                value={formData.video_url}
-                onChange={handleChange}
-                placeholder="https://www.youtube.com/watch?v=... or https://vimeo.com/..."
-                className={inputClass}
-              />
-              <p className="text-xs text-gray-600 mt-2">Paste a standard Vimeo or YouTube link. It will automatically convert to a playable video.</p>
-            </div>
-
-            {/* Video Orientation — shown when any video is set */}
-            {(formData.video_file_url || formData.video_url) && (
-              <div className="pt-4 border-t border-white/10">
-                <label className={labelClass}>Video Orientation</label>
-                <div className="grid grid-cols-2 gap-3 mt-2">
-                  {([
-                    { value: "horizontal", label: "⬛ Horizontal", sub: "16:9  —  landscape" },
-                    { value: "vertical",   label: "▬ Vertical",    sub: "9:16  —  portrait / reels" },
-                  ] as const).map(({ value, label, sub }) => (
-                    <button
-                      key={value}
-                      type="button"
-                      onClick={() => setFormData(p => ({ ...p, video_orientation: value }))}
-                      className={`py-3 px-4 rounded-lg border text-left transition-all duration-200 ${
-                        formData.video_orientation === value
-                          ? "border-white bg-white text-black"
-                          : "border-white/20 text-gray-400 hover:border-white/50"
-                      }`}
-                    >
-                      <p className="text-sm font-semibold">{label}</p>
-                      <p className={`text-xs mt-0.5 ${formData.video_orientation === value ? "text-black/60" : "text-gray-600"}`}>{sub}</p>
-                    </button>
-                  ))}
+                {/* File upload */}
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={vid.video_file_url}
+                    onChange={e => setVideos(v => v.map((item, i) => i === idx ? { ...item, video_file_url: e.target.value } : item))}
+                    placeholder="Upload URL or paste direct link..."
+                    className={inputClass}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => videoFileRefs.current[idx]?.click()}
+                    className="shrink-0 px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-gray-400 hover:text-white hover:border-white/30 transition-colors flex items-center gap-1.5"
+                  >
+                    {vid.uploading ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
+                    .mp4
+                  </button>
+                  <input
+                    ref={el => { videoFileRefs.current[idx] = el; }}
+                    type="file" accept="video/*" className="hidden"
+                    onChange={async (e) => {
+                      if (!e.target.files?.[0]) return;
+                      const file = e.target.files[0];
+                      setVideos(v => v.map((item, i) => i === idx ? { ...item, uploading: true } : item));
+                      try {
+                        const res = await fetch("/api/upload", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ fileName: file.name, fileType: file.type }) });
+                        const data = await res.json();
+                        if (!res.ok) throw new Error(data.error);
+                        const uploadRes = await fetch(data.presignedUrl, { method: "PUT", headers: { "Content-Type": file.type }, body: file });
+                        if (!uploadRes.ok) throw new Error("Upload failed");
+                        setVideos(v => v.map((item, i) => i === idx ? { ...item, video_file_url: data.publicUrl, uploading: false } : item));
+                      } catch (err: any) {
+                        alert("Upload failed: " + err.message);
+                        setVideos(v => v.map((item, i) => i === idx ? { ...item, uploading: false } : item));
+                      }
+                    }}
+                  />
                 </div>
+
+                {/* OR embed */}
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 h-px bg-white/10" />
+                  <span className="text-xs text-gray-600">OR embed</span>
+                  <div className="flex-1 h-px bg-white/10" />
+                </div>
+                <input
+                  type="text"
+                  value={vid.video_url}
+                  onChange={e => setVideos(v => v.map((item, i) => i === idx ? { ...item, video_url: e.target.value } : item))}
+                  placeholder="YouTube / Vimeo link..."
+                  className={inputClass}
+                />
+
+                {/* Orientation */}
+                {(vid.video_file_url || vid.video_url) && (
+                  <div className="grid grid-cols-2 gap-2 pt-1">
+                    {([{ value: "horizontal", label: "⬛ Horizontal" }, { value: "vertical", label: "▬ Vertical" }] as const).map(({ value, label }) => (
+                      <button
+                        key={value} type="button"
+                        onClick={() => setVideos(v => v.map((item, i) => i === idx ? { ...item, video_orientation: value } : item))}
+                        className={`py-2 px-3 rounded-lg border text-xs text-left transition-all ${
+                          vid.video_orientation === value ? "border-white bg-white text-black" : "border-white/20 text-gray-400 hover:border-white/50"
+                        }`}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
-            )}
+            ))}
           </div>
         </div>
       </section>
