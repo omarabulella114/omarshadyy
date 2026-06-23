@@ -32,7 +32,7 @@ export default function ProjectForm({ projectId }: ProjectFormProps) {
   const [galleryImages, setGalleryImages] = useState<{ id?: string, image_url: string, display_order: number }[]>([]);
   const [deletedGalleryImages, setDeletedGalleryImages] = useState<string[]>([]);
 
-  type VideoEntry = { id?: string; title: string; video_file_url: string; video_url: string; video_orientation: "horizontal" | "vertical"; uploading?: boolean; };
+  type VideoEntry = { id?: string; title: string; video_file_url: string; video_url: string; video_orientation: string; uploading?: boolean; };
   const [videos, setVideos] = useState<VideoEntry[]>([]);
   const [deletedVideoIds, setDeletedVideoIds] = useState<string[]>([]);
   const videoFileRefs = useRef<(HTMLInputElement | null)[]>([]);
