@@ -2,6 +2,9 @@ import { supabase } from "@/lib/supabase";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { Playfair_Display } from "next/font/google";
+
+const playfair = Playfair_Display({ subsets: ["latin"], weight: ["400", "600", "700"] });
 
 export const revalidate = 60;
 
@@ -114,13 +117,13 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
         </Link>
       </div>
 
-      <div className="mb-12 animate-fade-in-up">
-        <h1 className="text-4xl md:text-6xl font-bold tracking-widest mb-4 text-black">
+      <div className="mb-10 animate-fade-in-up">
+        <h1 className="text-2xl md:text-4xl font-semibold tracking-wide mb-3 text-black leading-tight">
           {project.title}
         </h1>
-        <div className="flex flex-wrap gap-4 text-sm tracking-wider text-gray-500 uppercase">
-          {project.role && <span>Role: {project.role}</span>}
-          {project.year && <span>Year: {project.year}</span>}
+        <div className="flex flex-wrap gap-4 text-xs tracking-wider text-gray-400 uppercase">
+          {project.role && <span>{project.role}</span>}
+          {project.year && <span>{project.year}</span>}
         </div>
       </div>
 
@@ -160,8 +163,28 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
 
       {/* Description */}
       {project.description && (
-        <div className="prose max-w-none text-lg font-light leading-relaxed mb-16 animate-fade-in-up animation-delay-400 text-gray-700">
-          <p>{project.description}</p>
+        <div className="max-w-2xl mb-16 animate-fade-in-up animation-delay-400 space-y-4">
+          {project.description.split("\n").filter((l: string) => l.trim() !== "").map((line: string, idx: number) => {
+            if (line.startsWith("## ")) {
+              return (
+                <h3 key={idx} className={`text-base md:text-lg font-semibold tracking-wider text-black mt-6 ${playfair.className}`}>
+                  {line.replace("## ", "")}
+                </h3>
+              );
+            }
+            if (line.startsWith("# ")) {
+              return (
+                <h2 key={idx} className={`text-xl md:text-2xl font-bold tracking-wide text-black mt-8 ${playfair.className}`}>
+                  {line.replace("# ", "")}
+                </h2>
+              );
+            }
+            return (
+              <p key={idx} className="text-gray-600 font-light leading-relaxed text-sm md:text-base">
+                {line}
+              </p>
+            );
+          })}
         </div>
       )}
 
