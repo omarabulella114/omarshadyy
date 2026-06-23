@@ -145,6 +145,8 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           {videoList.map((vid: any, idx: number) => {
             const embed = vid.video_url ? getEmbedUrl(vid.video_url) : "";
             const parseRatio = (r: string) => {
+              if (r === "horizontal") return 56.25;  // 16:9
+              if (r === "vertical")   return 177.78; // 9:16
               const [w, h] = (r || "16:9").split(":").map(Number);
               return (w && h) ? (h / w) * 100 : 56.25;
             };
