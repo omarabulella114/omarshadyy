@@ -150,7 +150,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                 {vid.title && (
                   <p className={`text-sm font-medium tracking-wider text-black/70 ${playfair.className}`}>{vid.title}</p>
                 )}
-                <div className={`relative w-full overflow-hidden bg-black ${
+                <div className={`relative w-full overflow-hidden bg-transparent ${
                   isVertical
                     ? (videoList.length === 1 ? "max-w-sm mx-auto aspect-[9/16]" : "aspect-[9/16]")
                     : "aspect-video"
