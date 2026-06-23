@@ -162,7 +162,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                   style={{ paddingBottom: paddingPct }}
                 >
                   {vid.video_file_url ? (
-                    <video src={vid.video_file_url} controls playsInline className="absolute inset-0 w-full h-full object-cover" />
+                    <video src={vid.video_file_url} controls playsInline className="absolute inset-0 w-full h-full object-contain" />
                   ) : embed ? (
                     <iframe src={embed} className="absolute inset-0 w-full h-full" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
                   ) : null}

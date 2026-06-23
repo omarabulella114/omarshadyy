@@ -694,11 +694,11 @@ export default function ProjectForm({ projectId }: ProjectFormProps) {
                 {/* Frame Size + Live Preview */}
                 {(vid.video_file_url || vid.video_url) && (() => {
                   const presets = [
-                    { value: "16:9",  label: "16:9",  hint: "Landscape" },
-                    { value: "9:16",  label: "9:16",  hint: "Portrait"  },
-                    { value: "4:3",   label: "4:3",   hint: "Classic"   },
-                    { value: "1:1",   label: "1:1",   hint: "Square"    },
-                    { value: "21:9",  label: "21:9",  hint: "Cinematic" },
+                    { value: "16:9",  label: "Horizontal", hint: "16:9" },
+                    { value: "9:16",  label: "Vertical",   hint: "9:16" },
+                    { value: "4:3",   label: "4:3",        hint: "Classic"   },
+                    { value: "1:1",   label: "1:1",        hint: "Square"    },
+                    { value: "21:9",  label: "21:9",       hint: "Cinematic" },
                   ];
                   const isPreset = presets.some(r => r.value === vid.video_orientation);
                   const isCustom = !isPreset && !!vid.video_orientation;
