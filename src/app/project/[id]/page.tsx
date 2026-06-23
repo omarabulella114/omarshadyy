@@ -144,19 +144,23 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
         }`}>
           {videoList.map((vid: any, idx: number) => {
             const embed = vid.video_url ? getEmbedUrl(vid.video_url) : "";
-            const isVertical = vid.video_orientation === "vertical";
+            const parseRatio = (r: string) => {
+              const [w, h] = (r || "16:9").split(":").map(Number);
+              return (w && h) ? (h / w) * 100 : 56.25;
+            };
+            const paddingPct = `${parseRatio(vid.video_orientation)}%`;
+            const isPortrait = vid.video_orientation === "9:16" || vid.video_orientation === "vertical";
             return (
               <div key={vid.id || idx} className="space-y-3">
                 {vid.title && (
                   <p className={`text-sm font-medium tracking-wider text-black/70 ${playfair.className}`}>{vid.title}</p>
                 )}
-                <div className={`relative w-full overflow-hidden bg-transparent ${
-                  isVertical
-                    ? (videoList.length === 1 ? "max-w-sm mx-auto aspect-[9/16]" : "aspect-[9/16]")
-                    : "aspect-video"
-                }`}>
+                <div
+                  className={`relative w-full overflow-hidden bg-black/5 ${isPortrait && videoList.length === 1 ? "max-w-sm mx-auto" : ""}`}
+                  style={{ paddingBottom: paddingPct }}
+                >
                   {vid.video_file_url ? (
-                    <video src={vid.video_file_url} controls playsInline className="absolute inset-0 w-full h-full object-contain" />
+                    <video src={vid.video_file_url} controls playsInline className="absolute inset-0 w-full h-full object-cover" />
                   ) : embed ? (
                     <iframe src={embed} className="absolute inset-0 w-full h-full" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
                   ) : null}

@@ -674,22 +674,108 @@ export default function ProjectForm({ projectId }: ProjectFormProps) {
                   className={inputClass}
                 />
 
-                {/* Orientation */}
-                {(vid.video_file_url || vid.video_url) && (
-                  <div className="grid grid-cols-2 gap-2 pt-1">
-                    {([{ value: "horizontal", label: "⬛ Horizontal" }, { value: "vertical", label: "▬ Vertical" }] as const).map(({ value, label }) => (
-                      <button
-                        key={value} type="button"
-                        onClick={() => setVideos(v => v.map((item, i) => i === idx ? { ...item, video_orientation: value } : item))}
-                        className={`py-2 px-3 rounded-lg border text-xs text-left transition-all ${
-                          vid.video_orientation === value ? "border-white bg-white text-black" : "border-white/20 text-gray-400 hover:border-white/50"
-                        }`}
-                      >
-                        {label}
-                      </button>
-                    ))}
-                  </div>
-                )}
+                {/* Frame Size + Live Preview */}
+                {(vid.video_file_url || vid.video_url) && (() => {
+                  const presets = [
+                    { value: "16:9",  label: "16:9",  hint: "Landscape" },
+                    { value: "9:16",  label: "9:16",  hint: "Portrait"  },
+                    { value: "4:3",   label: "4:3",   hint: "Classic"   },
+                    { value: "1:1",   label: "1:1",   hint: "Square"    },
+                    { value: "21:9",  label: "21:9",  hint: "Cinematic" },
+                  ];
+                  const isPreset = presets.some(r => r.value === vid.video_orientation);
+                  const isCustom = !isPreset && !!vid.video_orientation;
+
+                  // Parse ratio string "w:h" → percentage for preview
+                  const parseRatio = (r: string) => {
+                    const [w, h] = r.split(":").map(Number);
+                    return (w && h) ? { w, h } : { w: 16, h: 9 };
+                  };
+                  const ratio = parseRatio(vid.video_orientation || "16:9");
+                  const paddingPct = `${(ratio.h / ratio.w) * 100}%`;
+
+                  // Custom inputs state from orientation string
+                  const customParts = (isCustom ? vid.video_orientation : "").split(":");
+                  const customW = customParts[0] || "";
+                  const customH = customParts[1] || "";
+
+                  return (
+                    <div className="space-y-3 pt-2">
+                      <p className="text-xs text-gray-400 tracking-widest uppercase">Frame Size</p>
+
+                      {/* Preset buttons */}
+                      <div className="flex flex-wrap gap-2">
+                        {presets.map(r => (
+                          <button
+                            key={r.value} type="button"
+                            onClick={() => setVideos(v => v.map((item, i) => i === idx ? { ...item, video_orientation: r.value } : item))}
+                            className={`px-3 py-1.5 rounded-lg border text-xs transition-all ${
+                              vid.video_orientation === r.value
+                                ? "border-white bg-white text-black font-semibold"
+                                : "border-white/20 text-gray-400 hover:border-white/50"
+                            }`}
+                          >
+                            {r.label} <span className={`ml-1 text-[10px] ${vid.video_orientation === r.value ? "text-black/50" : "text-gray-600"}`}>{r.hint}</span>
+                          </button>
+                        ))}
+
+                        {/* Custom toggle */}
+                        <button
+                          type="button"
+                          onClick={() => setVideos(v => v.map((item, i) => i === idx ? { ...item, video_orientation: isCustom ? "16:9" : "custom" } : item))}
+                          className={`px-3 py-1.5 rounded-lg border text-xs transition-all ${
+                            isCustom ? "border-white bg-white text-black font-semibold" : "border-white/20 text-gray-400 hover:border-white/50"
+                          }`}
+                        >
+                          Custom
+                        </button>
+                      </div>
+
+                      {/* Custom ratio inputs */}
+                      {(isCustom || vid.video_orientation === "custom") && (
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="number" min="1" max="99"
+                            value={customW}
+                            onChange={e => {
+                              const h = customH || "9";
+                              setVideos(v => v.map((item, i) => i === idx ? { ...item, video_orientation: `${e.target.value}:${h}` } : item));
+                            }}
+                            placeholder="W"
+                            className="w-16 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm text-center focus:outline-none focus:border-white/40"
+                          />
+                          <span className="text-gray-500 font-bold text-lg">:</span>
+                          <input
+                            type="number" min="1" max="99"
+                            value={customH}
+                            onChange={e => {
+                              const w = customW || "16";
+                              setVideos(v => v.map((item, i) => i === idx ? { ...item, video_orientation: `${w}:${e.target.value}` } : item));
+                            }}
+                            placeholder="H"
+                            className="w-16 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm text-center focus:outline-none focus:border-white/40"
+                          />
+                          <span className="text-xs text-gray-600 ml-1">e.g. 3 : 2</span>
+                        </div>
+                      )}
+
+                      {/* Live Preview */}
+                      <div>
+                        <p className="text-[10px] text-gray-600 tracking-widest uppercase mb-2">Preview — exactly how it will look</p>
+                        <div
+                          className={`relative w-full overflow-hidden bg-black/40 rounded-lg ${vid.video_orientation === "9:16" ? "max-w-[180px]" : ""}`}
+                          style={{ paddingBottom: paddingPct }}
+                        >
+                          {vid.video_file_url ? (
+                            <video src={vid.video_file_url} muted playsInline className="absolute inset-0 w-full h-full object-cover" />
+                          ) : (
+                            <div className="absolute inset-0 flex items-center justify-center text-gray-500 text-xs">Embed preview not available</div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
               </div>
             ))}
           </div>
