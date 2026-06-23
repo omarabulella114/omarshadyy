@@ -651,7 +651,24 @@ export default function ProjectForm({ projectId }: ProjectFormProps) {
                         if (!res.ok) throw new Error(data.error);
                         const uploadRes = await fetch(data.presignedUrl, { method: "PUT", headers: { "Content-Type": file.type }, body: file });
                         if (!uploadRes.ok) throw new Error("Upload failed");
-                        setVideos(v => v.map((item, i) => i === idx ? { ...item, video_file_url: data.publicUrl, uploading: false } : item));
+
+                        // Auto-detect video dimensions and set ratio
+                        const autoRatio = await new Promise<string>((resolve) => {
+                          const tempVid = document.createElement("video");
+                          tempVid.preload = "metadata";
+                          tempVid.src = data.publicUrl;
+                          tempVid.onloadedmetadata = () => {
+                            const w = tempVid.videoWidth;
+                            const h = tempVid.videoHeight;
+                            const gcd = (a: number, b: number): number => b === 0 ? a : gcd(b, a % b);
+                            const d = gcd(w, h);
+                            resolve(`${w / d}:${h / d}`);
+                          };
+                          tempVid.onerror = () => resolve("16:9");
+                          setTimeout(() => resolve("16:9"), 5000); // fallback
+                        });
+
+                        setVideos(v => v.map((item, i) => i === idx ? { ...item, video_file_url: data.publicUrl, video_orientation: autoRatio, uploading: false } : item));
                       } catch (err: any) {
                         alert("Upload failed: " + err.message);
                         setVideos(v => v.map((item, i) => i === idx ? { ...item, uploading: false } : item));
