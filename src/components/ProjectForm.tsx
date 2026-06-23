@@ -318,12 +318,18 @@ export default function ProjectForm({ projectId }: ProjectFormProps) {
           <label className={labelClass}>Description</label>
           <textarea
             name="description"
-            rows={4}
+            rows={6}
             value={formData.description}
             onChange={handleChange}
-            placeholder="Tell the story behind this project..."
+            placeholder={"Tell the story behind this project...\n\n# Big Heading\n## Smaller Heading\nJust type normally for a paragraph."}
             className={inputClass}
           />
+          <div className="mt-2 flex flex-wrap gap-x-6 gap-y-1">
+            <span className="text-[11px] text-gray-600"><span className="text-white/50 font-mono"># Title</span> → Large heading</span>
+            <span className="text-[11px] text-gray-600"><span className="text-white/50 font-mono">## Title</span> → Small heading</span>
+            <span className="text-[11px] text-gray-600">Normal text → Paragraph</span>
+            <span className="text-[11px] text-gray-600">Blank line → New paragraph</span>
+          </div>
         </div>
 
         {/* Role + Year */}
