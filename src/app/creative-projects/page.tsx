@@ -4,7 +4,7 @@ import { Playfair_Display } from "next/font/google";
 
 const playfair = Playfair_Display({ subsets: ["latin"], weight: ["400", "700"] });
 
-export const revalidate = 60;
+export const revalidate = 3600;
 
 export const metadata = {
   title: "Creative Projects | Omar Shady",
@@ -48,6 +48,7 @@ export default async function CreativeProjectsPage() {
                 <img
                   src={project.cover_image_url || "/placeholder-creative.jpg"}
                   alt={project.title}
+                  loading="lazy"
                   className="w-full h-full object-cover transform group-hover:scale-105 transition-all duration-1000 ease-out"
                   style={{ objectPosition: project.cover_position || "center" }}
                 />

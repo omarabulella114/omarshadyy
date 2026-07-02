@@ -157,16 +157,43 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                 {vid.title && (
                   <p className={`text-sm font-medium tracking-wider text-black/70 ${playfair.className}`}>{vid.title}</p>
                 )}
-                <div
-                  className={`relative w-full overflow-hidden bg-black/5 ${isPortrait && videoList.length === 1 ? "max-w-sm mx-auto" : ""}`}
-                  style={{ paddingBottom: paddingPct }}
-                >
-                  {vid.video_file_url ? (
-                    <video src={vid.video_file_url} controls playsInline className="absolute inset-0 w-full h-full object-contain" />
-                  ) : embed ? (
-                    <iframe src={embed} className="absolute inset-0 w-full h-full" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
-                  ) : null}
-                </div>
+                {/* Vertical: fixed height container, horizontal: padding-bottom ratio trick */}
+                {isPortrait ? (
+                  <div className="flex justify-center">
+                    <div className="relative overflow-hidden bg-black/5" style={{ height: "min(85vh, 600px)", aspectRatio: "9/16" }}>
+                      {vid.video_file_url ? (
+                        <video
+                          src={vid.video_file_url}
+                          controls
+                          playsInline
+                          preload="none"
+                          poster={project.cover_image_url || undefined}
+                          className="absolute inset-0 w-full h-full object-contain"
+                        />
+                      ) : embed ? (
+                        <iframe src={embed} className="absolute inset-0 w-full h-full" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                      ) : null}
+                    </div>
+                  </div>
+                ) : (
+                  <div
+                    className="relative w-full overflow-hidden bg-black/5"
+                    style={{ paddingBottom: paddingPct }}
+                  >
+                    {vid.video_file_url ? (
+                      <video
+                        src={vid.video_file_url}
+                        controls
+                        playsInline
+                        preload="none"
+                        poster={project.cover_image_url || undefined}
+                        className="absolute inset-0 w-full h-full object-contain"
+                      />
+                    ) : embed ? (
+                      <iframe src={embed} className="absolute inset-0 w-full h-full" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                    ) : null}
+                  </div>
+                )}
               </div>
             );
           })}
