@@ -166,7 +166,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                           src={vid.video_file_url}
                           controls
                           playsInline
-                          preload="none"
+                          preload="metadata"
                           poster={project.cover_image_url || undefined}
                           className="absolute inset-0 w-full h-full object-contain"
                         />
