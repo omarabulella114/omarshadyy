@@ -20,7 +20,7 @@ export default async function Home() {
       {/* Background Media */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         {isVideo ? (
-          <video src={heroUrl} autoPlay loop muted playsInline className="w-full h-full object-cover" />
+          <video src={heroUrl} autoPlay loop muted playsInline preload="auto" className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full relative">
             <Image

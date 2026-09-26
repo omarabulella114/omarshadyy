@@ -148,9 +148,6 @@ export default function Navbar() {
                   <a href="https://www.instagram.com/omarshadyy?igsh=MW1yd3gwcWR1Y2c3eQ==" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-black/30 hover:text-black transition-colors">
                     <InstagramIcon size={16} />
                   </a>
-                  <a href="#" aria-label="Vimeo" className="text-black/30 hover:text-black transition-colors">
-                    <VimeoIcon size={16} />
-                  </a>
                 </div>
               </motion.div>
             </motion.div>

@@ -5,6 +5,8 @@ import { Playfair_Display } from "next/font/google";
 
 const playfair = Playfair_Display({ subsets: ["latin"], weight: ["400", "700"] });
 
+export const revalidate = 300;
+
 export const metadata = {
   title: "About | Omar Shady",
   description: "Omar Shady — filmmaker, photographer, and creative director based worldwide.",

@@ -4,6 +4,8 @@ import { Mail } from "lucide-react";
 
 const playfair = Playfair_Display({ subsets: ["latin"], weight: ["400", "700"] });
 
+export const revalidate = 3600;
+
 export const metadata = {
   title: "Contact | Omar Shady",
   description: "Get in touch with Omar Shady for film, photography, and creative collaborations.",
@@ -46,7 +48,6 @@ export default function ContactPage() {
           <div className="flex flex-col gap-5 md:gap-6">
             {[
               { href: "https://www.instagram.com/omarshadyy?igsh=MW1yd3gwcWR1Y2c3eQ==", Icon: InstagramIcon, label: "Instagram", sub: "@omarshadyy", target: "_blank" },
-              { href: "#", Icon: VimeoIcon, label: "Vimeo", sub: "Portfolio & Films", target: undefined },
             ].map(({ href, Icon, label, sub, target }) => (
               <a key={label} href={href} target={target} rel={target ? "noopener noreferrer" : undefined}
                 className="flex items-center gap-4 md:gap-5 group active:opacity-70">

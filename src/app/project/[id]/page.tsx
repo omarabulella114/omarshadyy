@@ -63,7 +63,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   const resolvedParams = await params;
   const { data: project } = await supabase
     .from("projects")
-    .select("*")
+    .select("id, title, description, category, role, year, video_url, video_file_url, video_orientation, cover_image_url, is_published, meta_title, meta_description, og_image_url")
     .eq("id", resolvedParams.id)
     .single();
 
@@ -185,7 +185,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                         src={vid.video_file_url}
                         controls
                         playsInline
-                        preload="none"
+                        preload="metadata"
                         poster={project.cover_image_url || undefined}
                         className="absolute inset-0 w-full h-full object-contain"
                       />
@@ -241,7 +241,9 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
             <img
               key={idx}
               src={img.image_url}
-              alt={`${project.title} Gallery Image ${idx + 1}`}
+              alt={`${project.title} — image ${idx + 1}`}
+              loading="lazy"
+              decoding="async"
               className="w-full h-auto object-cover bg-black/5"
             />
           ))}
