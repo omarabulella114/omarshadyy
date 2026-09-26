@@ -45,13 +45,20 @@ export default async function CreativeProjectsPage() {
               style={{ animationDelay: `${index * 80}ms` }}
             >
               <div className="relative aspect-[4/3] w-full overflow-hidden mb-4 bg-black/5">
-                <img
-                  src={project.cover_image_url || "/placeholder-creative.jpg"}
-                  alt={project.title}
-                  loading="lazy"
-                  className="w-full h-full object-cover transform group-hover:scale-105 transition-all duration-1000 ease-out"
-                  style={{ objectPosition: project.cover_position || "center" }}
-                />
+                {project.cover_image_url ? (
+                  <img
+                    src={project.cover_image_url}
+                    alt={project.title}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover transform group-hover:scale-105 transition-all duration-1000 ease-out"
+                    style={{ objectPosition: project.cover_position || "center" }}
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-neutral-100">
+                    <span className="text-[10px] tracking-[0.3em] uppercase text-neutral-300">No Image</span>
+                  </div>
+                )}
               </div>
               <div className="flex justify-center text-center mt-2">
                 <h2 className={`text-sm md:text-base font-semibold tracking-widest text-black group-hover:opacity-60 transition-opacity duration-300 ${playfair.className}`}>
