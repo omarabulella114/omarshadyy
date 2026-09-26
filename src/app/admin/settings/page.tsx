@@ -45,6 +45,8 @@ export default function AdminSettings() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const [saved, setSaved] = useState(false);
+
   const uploadFile = async (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
     if (!e.target.files || e.target.files.length === 0) return;
     const file = e.target.files[0];
@@ -52,17 +54,15 @@ export default function AdminSettings() {
     setLoading(true);
 
     try {
-      // 1. Get presigned URL
       const res = await fetch("/api/upload", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ fileName: file.name, fileType: file.type }),
       });
       const data = await res.json();
-      
+
       if (!res.ok) throw new Error(data.error || "Failed to get upload URL");
 
-      // 2. Upload file directly to Cloudflare R2
       const uploadRes = await fetch(data.presignedUrl, {
         method: "PUT",
         headers: { "Content-Type": file.type },
@@ -71,11 +71,10 @@ export default function AdminSettings() {
 
       if (!uploadRes.ok) throw new Error("Failed to upload to Cloudflare R2");
 
-      // 3. Save the public URL
       setFormData(prev => ({ ...prev, [field]: data.publicUrl }));
-    } catch (error: any) {
-      console.error(error);
-      alert("Error uploading file: " + error.message);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Upload failed";
+      alert("Error uploading file: " + message);
     } finally {
       setLoading(false);
     }
@@ -84,6 +83,7 @@ export default function AdminSettings() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setSaved(false);
 
     if (settingsId) {
       await supabase.from("site_settings").update(formData).eq("id", settingsId);
@@ -92,7 +92,8 @@ export default function AdminSettings() {
     }
 
     setLoading(false);
-    alert("Settings saved successfully!");
+    setSaved(true);
+    setTimeout(() => setSaved(false), 3000);
   };
 
   if (initialLoad) return <div className="text-gray-400">Loading settings...</div>;
@@ -180,13 +181,19 @@ export default function AdminSettings() {
           </div>
         </div>
 
-        <div className="pt-6 border-t border-white/10 flex justify-end">
+        <div className="pt-6 border-t border-white/10 flex items-center justify-between gap-4">
+          {saved && (
+            <span className="text-sm text-green-400 font-medium flex items-center gap-2">
+              ✓ Settings saved
+            </span>
+          )}
+          {!saved && <span />}
           <button
             type="submit"
             disabled={loading}
-            className="bg-white text-black px-8 py-3 rounded font-semibold tracking-wide uppercase hover:bg-gray-200 transition-colors flex items-center gap-2 disabled:opacity-50"
+            className="bg-white text-black px-8 py-3 rounded-lg font-semibold tracking-wide uppercase hover:bg-gray-200 transition-colors flex items-center gap-2 disabled:opacity-50"
           >
-            {loading && <Loader2 className="w-5 h-5 animate-spin" />}
+            {loading && <Loader2 className="w-4 h-4 animate-spin" />}
             Save Settings
           </button>
         </div>

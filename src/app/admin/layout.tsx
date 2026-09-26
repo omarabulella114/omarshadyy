@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { LayoutDashboard, Film, Settings, LogOut, Loader2, ExternalLink } from "lucide-react";
 
@@ -56,9 +57,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (!isAuthenticated) return null;
 
   const navItems = [
-    { label: "Overview", href: "/admin", Icon: LayoutDashboard, exact: true },
-    { label: "Projects", href: "/admin/projects", Icon: Film, exact: false },
-    { label: "Settings", href: "/admin/settings", Icon: Settings, exact: true },
+    { label: "Overview",  href: "/admin",          Icon: LayoutDashboard, exact: true  },
+    { label: "Projects",  href: "/admin/projects",  Icon: Film,            exact: false },
+    { label: "Settings",  href: "/admin/settings",  Icon: Settings,        exact: true  },
   ];
 
   return (
@@ -71,14 +72,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <p className="text-white font-bold tracking-wide">Omar Shady</p>
         </div>
 
-        {/* Nav */}
+        {/* Nav — use <Link> for instant client-side navigation */}
         <nav className="flex-1 p-4 space-y-1">
           {navItems.map(({ label, href, Icon, exact }) => {
             const isActive = exact ? pathname === href : pathname.startsWith(href);
             return (
-              <button
+              <Link
                 key={href}
-                onClick={() => { window.location.href = href; }}
+                href={href}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors duration-200 ${
                   isActive
                     ? "bg-white text-black font-semibold"
@@ -87,20 +88,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               >
                 <Icon size={18} />
                 <span className="text-sm tracking-wide">{label}</span>
-              </button>
+              </Link>
             );
           })}
         </nav>
 
         {/* Bottom */}
         <div className="p-4 border-t border-white/10 space-y-1">
-          <button
-            onClick={() => { window.open("/", "_blank"); }}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-500 hover:text-white hover:bg-white/5 transition-colors duration-200 text-left"
+          <a
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-500 hover:text-white hover:bg-white/5 transition-colors duration-200"
           >
             <ExternalLink size={18} />
             <span className="text-sm tracking-wide">View Site</span>
-          </button>
+          </a>
           <button
             onClick={handleLogout}
             className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-500 hover:text-red-400 hover:bg-red-500/5 transition-colors duration-200 text-left"

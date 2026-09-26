@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { Film, Image as ImageIcon, Eye, Plus, ArrowRight } from "lucide-react";
+import Link from "next/link";
+import { Film, Image as ImageIcon, Eye, Plus, ArrowRight, FileEdit } from "lucide-react";
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({ films: 0, creative: 0, published: 0 });
@@ -10,12 +11,12 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     async function fetchStats() {
-      const { data: projects } = await supabase.from("projects").select("category, is_published");
-      if (projects) {
+      const { data } = await supabase.from("projects").select("category, is_published");
+      if (data) {
         setStats({
-          films: projects.filter((p) => p.category === "film").length,
-          creative: projects.filter((p) => p.category === "creative").length,
-          published: projects.filter((p) => p.is_published).length,
+          films:     data.filter(p => p.category === "film").length,
+          creative:  data.filter(p => p.category === "creative").length,
+          published: data.filter(p => p.is_published).length,
         });
       }
       setLoading(false);
@@ -23,32 +24,32 @@ export default function AdminDashboard() {
     fetchStats();
   }, []);
 
+  const statCards = [
+    { label: "Films",     value: stats.films,     Icon: Film,       color: "text-blue-400",   bg: "bg-blue-500/10"   },
+    { label: "Creative",  value: stats.creative,   Icon: ImageIcon,  color: "text-purple-400", bg: "bg-purple-500/10" },
+    { label: "Published", value: stats.published,  Icon: Eye,        color: "text-green-400",  bg: "bg-green-500/10"  },
+  ];
+
+  const quickActions = [
+    { label: "Add New Project",   sub: "Upload a film or creative project",   href: "/admin/projects/new", Icon: Plus      },
+    { label: "Manage Projects",   sub: "Edit, reorder, or remove projects",   href: "/admin/projects",     Icon: FileEdit  },
+    { label: "Update Hero Image", sub: "Change your homepage background",     href: "/admin/settings",     Icon: ImageIcon },
+  ];
+
   return (
     <div className="max-w-5xl mx-auto">
-      <div className="flex justify-between items-center mb-10">
-        <div>
-          <h1 className="text-3xl font-bold tracking-widest uppercase">Dashboard</h1>
-          <p className="text-gray-500 text-sm mt-1 font-light">Welcome back, Omar.</p>
-        </div>
-        <button
-          onClick={() => { window.location.href = "/admin/projects/new"; }}
-          className="flex items-center gap-2 bg-white text-black px-5 py-2.5 rounded-lg font-semibold text-sm hover:bg-gray-100 transition-colors"
-        >
-          <Plus size={18} />
-          New Project
-        </button>
+      {/* Header */}
+      <div className="mb-10">
+        <h1 className="text-3xl font-bold tracking-widest uppercase">Dashboard</h1>
+        <p className="text-gray-500 text-sm mt-1 font-light">Welcome back, Omar.</p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-12">
-        {[
-          { label: "Films", value: stats.films, Icon: Film, color: "text-blue-400", bg: "bg-blue-500/10" },
-          { label: "Creative", value: stats.creative, Icon: ImageIcon, color: "text-purple-400", bg: "bg-purple-500/10" },
-          { label: "Published", value: stats.published, Icon: Eye, color: "text-green-400", bg: "bg-green-500/10" },
-        ].map(({ label, value, Icon, color, bg }) => (
+        {statCards.map(({ label, value, Icon, color, bg }) => (
           <div key={label} className="bg-white/5 border border-white/10 rounded-xl p-6 flex items-center gap-4">
             <div className={`p-3 ${bg} ${color} rounded-lg`}>
-              <Icon size={24} />
+              <Icon size={22} />
             </div>
             <div>
               <p className="text-gray-500 text-xs uppercase tracking-wider mb-1">{label}</p>
@@ -59,28 +60,23 @@ export default function AdminDashboard() {
       </div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <button
-          onClick={() => { window.location.href = "/admin/projects/new"; }}
-          className="group flex items-center justify-between bg-white/5 border border-white/10 hover:border-white/30 rounded-xl p-6 text-left transition-all duration-200"
-        >
-          <div>
-            <p className="font-semibold text-white mb-1">Add New Project</p>
-            <p className="text-gray-500 text-sm font-light">Upload a film or creative project</p>
-          </div>
-          <ArrowRight size={20} className="text-gray-600 group-hover:text-white group-hover:translate-x-1 transition-all duration-200" />
-        </button>
-
-        <button
-          onClick={() => { window.location.href = "/admin/settings"; }}
-          className="group flex items-center justify-between bg-white/5 border border-white/10 hover:border-white/30 rounded-xl p-6 text-left transition-all duration-200"
-        >
-          <div>
-            <p className="font-semibold text-white mb-1">Update Hero Image</p>
-            <p className="text-gray-500 text-sm font-light">Change your homepage background</p>
-          </div>
-          <ArrowRight size={20} className="text-gray-600 group-hover:text-white group-hover:translate-x-1 transition-all duration-200" />
-        </button>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {quickActions.map(({ label, sub, href, Icon }) => (
+          <Link
+            key={href}
+            href={href}
+            className="group flex items-center justify-between bg-white/5 border border-white/10 hover:border-white/30 rounded-xl p-6 transition-all duration-200"
+          >
+            <div className="flex items-center gap-3">
+              <Icon size={18} className="text-gray-500 group-hover:text-white transition-colors shrink-0" />
+              <div>
+                <p className="font-semibold text-white text-sm">{label}</p>
+                <p className="text-gray-500 text-xs font-light mt-0.5">{sub}</p>
+              </div>
+            </div>
+            <ArrowRight size={16} className="text-gray-600 group-hover:text-white group-hover:translate-x-1 transition-all duration-200 shrink-0 ml-3" />
+          </Link>
+        ))}
       </div>
     </div>
   );
