@@ -31,7 +31,25 @@ export default function AdminProjects() {
       .order("display_order", { ascending: true })
       .order("created_at", { ascending: false });
 
-    if (data) setProjects(data);
+    if (data) {
+      // Check if display_order has duplicates (broken state)
+      const orders = data.map(p => p.display_order);
+      const hasDuplicates = new Set(orders).size !== orders.length;
+
+      if (hasDuplicates) {
+        // Normalize all to sequential 0, 1, 2... and save to DB
+        const normalized = data.map((p, idx) => ({ ...p, display_order: idx }));
+        setProjects(normalized);
+        await Promise.all(
+          normalized.map(p =>
+            supabase.from("projects").update({ display_order: p.display_order }).eq("id", p.id)
+          )
+        );
+      } else {
+        setProjects(data);
+      }
+    }
+
     if (error) console.error("Failed to fetch projects:", error.message);
     setLoading(false);
   }
@@ -56,13 +74,16 @@ export default function AdminProjects() {
     const targetIndex = direction === "up" ? index - 1 : index + 1;
     [newProjects[index], newProjects[targetIndex]] = [newProjects[targetIndex], newProjects[index]];
 
+    // Assign fresh sequential display_order for every item
     const updated = newProjects.map((p, idx) => ({ ...p, display_order: idx }));
     setProjects(updated);
 
-    await Promise.all([
-      supabase.from("projects").update({ display_order: targetIndex }).eq("id", newProjects[targetIndex].id),
-      supabase.from("projects").update({ display_order: index }).eq("id", newProjects[index].id),
-    ]);
+    // Save ALL positions — not just the two swapped — to keep DB perfectly in sync
+    await Promise.all(
+      updated.map(p =>
+        supabase.from("projects").update({ display_order: p.display_order }).eq("id", p.id)
+      )
+    );
   }
 
   return (
