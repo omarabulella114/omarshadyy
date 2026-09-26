@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 import { Playfair_Display } from "next/font/google";
 
@@ -46,12 +47,13 @@ export default async function CreativeProjectsPage() {
             >
               <div className="relative aspect-[4/3] w-full overflow-hidden mb-4 bg-black/5">
                 {project.cover_image_url ? (
-                  <img
+                  <Image
                     src={project.cover_image_url}
                     alt={project.title}
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full h-full object-cover transform group-hover:scale-105 transition-all duration-1000 ease-out"
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    quality={80}
+                    className="object-cover transform group-hover:scale-105 transition-all duration-1000 ease-out"
                     style={{ objectPosition: project.cover_position || "center" }}
                   />
                 ) : (

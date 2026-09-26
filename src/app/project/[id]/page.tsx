@@ -1,6 +1,7 @@
 import { supabase } from "@/lib/supabase";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import type { Metadata } from "next";
 import { Playfair_Display } from "next/font/google";
 
@@ -202,8 +203,15 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
 
       {/* Fallback: cover image if no videos */}
       {videoList.length === 0 && project.cover_image_url && (
-        <div className="relative w-full overflow-hidden bg-black/5 mb-16">
-          <img src={project.cover_image_url} alt={project.title} className="w-full h-auto object-cover" />
+        <div className="relative w-full aspect-[16/9] overflow-hidden bg-black/5 mb-16">
+          <Image
+            src={project.cover_image_url}
+            alt={project.title}
+            fill
+            sizes="100vw"
+            quality={85}
+            className="object-cover"
+          />
         </div>
       )}
 
@@ -238,14 +246,16 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
       {gallery && gallery.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-fade-in-up animation-delay-400">
           {gallery.map((img, idx) => (
-            <img
-              key={idx}
-              src={img.image_url}
-              alt={`${project.title} — image ${idx + 1}`}
-              loading="lazy"
-              decoding="async"
-              className="w-full h-auto object-cover bg-black/5"
-            />
+            <div key={idx} className="relative aspect-[4/3] w-full overflow-hidden bg-black/5">
+              <Image
+                src={img.image_url}
+                alt={`${project.title} — image ${idx + 1}`}
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                quality={80}
+                className="object-cover"
+              />
+            </div>
           ))}
         </div>
       )}
